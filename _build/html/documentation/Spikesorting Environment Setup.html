@@ -1,0 +1,607 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Setup Spikesorting Environment &#8212; Petersen Lab Book</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/css-rules.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=12da95d707ffb74b382d" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=12da95d707ffb74b382d" />
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'documentation/Spikesorting Environment Setup';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Spikesorting Instructions" href="../protocols/Spikesorting%20Instructions.html" />
+    <link rel="prev" title="How to Edit This Lab Book" href="How%20to%20Edit%20This%20Lab%20Book.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="../intro.html">
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/logo.png" class="logo__image only-light" alt="Logo image"/>
+    <script>document.write(`<img src="../_static/logo.png" class="logo__image only-dark" alt="Logo image"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../intro.html">
+                    Welcome to Petersen Lab Book
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="How%20to%20Edit%20This%20Lab%20Book.html">How to Edit This Lab Book</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Setup Spikesorting Environment</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Protocols</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../protocols/Spikesorting%20Instructions.html">Spikesorting Instructions</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/Future%20Tutorial.html">Future Tutorial</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Resources</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../resources/Spikesorting.html">Spikesorting</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/dervinism/petersen-lab-book" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/dervinism/petersen-lab-book/issues/new?title=Issue%20on%20page%20%2Fdocumentation/Spikesorting Environment Setup.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/documentation/Spikesorting Environment Setup.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Setup Spikesorting Environment</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#prerequisites">Prerequisites</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#matlab-installation">Matlab Installation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#git-installation">Git Installation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cellexplorer-installation">CellExplorer Installation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#npy-matlab-installation">npy-matlab Installation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#kilosort-installation">Kilosort Installation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#kilosortwrapper-installation">KilosortWrapper Installation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#phy-installation">Phy Installation</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="setup-spikesorting-environment">
+<span id="doc-spikesorting-env"></span><h1>Setup Spikesorting Environment<a class="headerlink" href="#setup-spikesorting-environment" title="Permalink to this heading">#</a></h1>
+<p>Instructions for setting up spikesorting environment on your Windows computer.</p>
+<section id="prerequisites">
+<span id="doc-spikesorting-env-prerequisites"></span><h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this heading">#</a></h2>
+<p>To spikesort, you have to have <a class="reference external" href="https://se.mathworks.com/products/matlab.html">Matlab</a>, <a class="reference external" href="https://git-scm.com/">Git</a>, <a class="reference external" href="https://cellexplorer.org/">CellExplorer</a>, <a class="reference external" href="https://github.com/kwikteam/npy-matlab">npy-matlab</a>, <a class="reference external" href="https://github.com/MouseLand/Kilosort">Kilosort3</a>, <a class="reference external" href="https://github.com/dervinism/KilosortWrapper">KilosortWrapper</a>, and <a class="reference external" href="https://github.com/cortex-lab/phy">Phy</a> installed on your system. If you are using Windows, it is advisable to install the <a class="reference external" href="https://apps.microsoft.com/store/detail/windows-terminal/9N0DX20HK701">Windows Terminal</a> and the <a class="reference external" href="https://ubuntu.com/wsl">Windows Subsystem for Linux</a> (WSL).</p>
+<section id="matlab-installation">
+<span id="doc-spikesorting-env-install-matlab"></span><h3>Matlab Installation<a class="headerlink" href="#matlab-installation" title="Permalink to this heading">#</a></h3>
+<p>Matlab is a proprietary software and the University of Copenhagen has acquired the license for the software. Matlab can be installed by following instructions provided <a class="reference external" href="https://se.mathworks.com/academia/tah-portal/university-of-copenhagen-30348482.html">here</a>. Make sure that you also install Matlab with all of its toolboxes.</p>
+</section>
+<section id="git-installation">
+<span id="doc-spikesorting-env-install-git"></span><h3>Git Installation<a class="headerlink" href="#git-installation" title="Permalink to this heading">#</a></h3>
+<p>Git installation instructions are provided <a class="reference external" href="https://git-scm.com/downloads">here</a>.</p>
+</section>
+<section id="cellexplorer-installation">
+<span id="doc-spikesorting-env-install-cellexplorer"></span><h3>CellExplorer Installation<a class="headerlink" href="#cellexplorer-installation" title="Permalink to this heading">#</a></h3>
+<p>Download CellExplorer Github <a class="reference external" href="https://github.com/petersenpeter/CellExplorer">repository</a> and add it to your Matlab path (make sure you add it with subfolders). If you are using Linux, an extra step is to go to <code class="docutils literal notranslate"><span class="pre">CellExplorer/calc_CellMetrics/mex/</span></code> folder while in Matlab and type:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mex</span> <span class="o">-</span><span class="n">O</span> <span class="n">CCGHeart</span><span class="o">.</span><span class="n">c</span>
+<span class="n">mex</span> <span class="o">-</span><span class="n">O</span> <span class="n">FindInInterval</span><span class="o">.</span><span class="n">c</span>
+</pre></div>
+</div>
+</section>
+<section id="npy-matlab-installation">
+<span id="doc-spikesorting-env-install-npy-matlab"></span><h3>npy-matlab Installation<a class="headerlink" href="#npy-matlab-installation" title="Permalink to this heading">#</a></h3>
+<p>The purpose of the npy-matlab library and its installation instructions can be found on its Github repository <a class="reference external" href="https://github.com/kwikteam/npy-matlab">page</a>. You simply need to download this repository and add it to your Matlab path.</p>
+</section>
+<section id="kilosort-installation">
+<span id="doc-spikesorting-env-install-kilosort"></span><h3>Kilosort Installation<a class="headerlink" href="#kilosort-installation" title="Permalink to this heading">#</a></h3>
+<p>Kilosort3 installation is more involved and is outlined on the Kilosort’s Github repository <a class="reference external" href="https://github.com/MouseLand/Kilosort">page</a>. If you are using Windows, you will also need to install Visual Studio Community 2019 and make it the Matlab’s default C++ compiler.</p>
+</section>
+<section id="kilosortwrapper-installation">
+<span id="doc-spikesorting-env-install-kswrapper"></span><h3>KilosortWrapper Installation<a class="headerlink" href="#kilosortwrapper-installation" title="Permalink to this heading">#</a></h3>
+<p>To install the KilosortWrapper, follow the instructions outlined in its Github repository <a class="reference external" href="https://github.com/dervinism/KilosortWrapper">page</a>. Download the repository and add it to your Matlab path. Also add subdirectories <code class="docutils literal notranslate"><span class="pre">chanMaps</span></code> and <code class="docutils literal notranslate"><span class="pre">ConfigurationFiles</span></code> to your Matlab path. One extra step to follow, inside Matlab navigate to the <code class="docutils literal notranslate"><span class="pre">private</span></code> folder of the wrapper and type:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mex</span> <span class="o">-</span><span class="n">O</span> <span class="n">CCGHeart</span><span class="o">.</span><span class="n">c</span>
+</pre></div>
+</div>
+</section>
+<section id="phy-installation">
+<span id="doc-spikesorting-env-install-phy"></span><h3>Phy Installation<a class="headerlink" href="#phy-installation" title="Permalink to this heading">#</a></h3>
+<p>At this stage you will have to use the terminal of your operating system. Below is the description of some notation that can be used here and that you may not be familiar with:</p>
+<ul class="simple">
+<li><p>[]: Square brackets mean an optional argument (inclusive of brackets)</p></li>
+<li><p>&lt;&gt;: Angle brackets mean that the text within should be replaced with an appropriate argument (inclusive of brackets).</p></li>
+<li><p>Both types of brackets can be combined.</p></li>
+<li><p>The use of dashes in command argument names indicates that the argument name does not allow for blank spaces.</p></li>
+<li><p>Path arguments most often do not contain spaces. If your path does contain spaces, enclose your path argument within single or double quotations. For example, use either <code class="docutils literal notranslate"><span class="pre">some-command</span> <span class="pre">path/to/my/repository</span></code> or <code class="docutils literal notranslate"><span class="pre">some-command</span> <span class="pre">&quot;path/to/my</span> <span class="pre">repository&quot;</span></code>.</p></li>
+<li><p>$WINDOWS-STATE-VARIABLE: State variables in Windows are denoted using the dollar sign followed by the name of the variable in capital letters.</p></li>
+</ul>
+<p>Phy is a Python library and we are going to install it in its dedicated environment. Assuming you are using Windows, execute all subsequent commands in the PowerShell. First, install Python by typing in the terminal:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span>
+</pre></div>
+</div>
+<p>Then proceed with setting up Phy environment</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">--</span><span class="n">user</span> <span class="n">virtualenv</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="n">virtualenv</span>
+<span class="n">cd</span> <span class="o">&lt;</span><span class="n">path</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">where</span><span class="o">-</span><span class="n">you</span><span class="o">-</span><span class="n">will</span><span class="o">-</span><span class="n">install</span><span class="o">-</span><span class="n">phy</span><span class="o">-</span><span class="n">environment</span><span class="o">&gt;</span>
+<span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">venv</span> <span class="n">phy</span>
+</pre></div>
+</div>
+<p>The next step is to install Phy. You will need to download phy and phylib Github repositories. Make sure that you keep your phy environment and phy code folders separate. In your terminal type:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">&lt;</span><span class="n">path</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">your</span><span class="o">-</span><span class="n">folder</span><span class="o">-</span><span class="n">where</span><span class="o">-</span><span class="n">you</span><span class="o">-</span><span class="n">want</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">download</span><span class="o">-</span><span class="n">phy</span><span class="o">&gt;</span>
+<span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">cortex</span><span class="o">-</span><span class="n">lab</span><span class="o">/</span><span class="n">phy</span>
+<span class="n">cd</span> <span class="n">phy</span>
+</pre></div>
+</div>
+<p>Now edit the <code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code> file as it is not up-to-date with the latest Phy code. In your terminal type:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">notepad</span> <span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
+</pre></div>
+</div>
+<p>Replace the line that says <code class="docutils literal notranslate"><span class="pre">numpy</span></code> to <code class="docutils literal notranslate"><span class="pre">numpy==1.23.5</span></code>. Once the <code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code> file is updated, continue with the rest of the installation and type:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">.&lt;</span><span class="n">path</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">where</span><span class="o">-</span><span class="n">you</span><span class="o">-</span><span class="n">will</span><span class="o">-</span><span class="n">install</span><span class="o">-</span><span class="n">phy</span><span class="o">-</span><span class="n">environment</span><span class="o">&gt;</span>\<span class="n">phy</span>\<span class="n">Scripts</span>\<span class="n">activate</span><span class="o">.</span><span class="n">ps1</span>
+<span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">--</span><span class="n">upgrade</span> <span class="n">pip</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="n">requirements</span><span class="o">-</span><span class="n">dev</span><span class="o">.</span><span class="n">txt</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="o">.</span>
+<span class="n">cd</span> <span class="o">..</span>
+<span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">cortex</span><span class="o">-</span><span class="n">lab</span><span class="o">/</span><span class="n">phylib</span>
+<span class="n">cd</span> <span class="n">phylib</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="o">.</span> <span class="o">--</span><span class="n">upgrade</span>
+</pre></div>
+</div>
+<p>Now that Phy has been installed, navigate to the folder with the Kilosort output and, while phy environment is still open (activated with command <code class="docutils literal notranslate"><span class="pre">.&lt;path-to-where-you-will-install-phy-environment&gt;\phy\Scripts\activate.ps1</span></code>), in your terminal type:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">phy</span> <span class="n">template</span><span class="o">-</span><span class="n">gui</span> <span class="n">params</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+<p>When finished working with Phy, to close Phy environment, type:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">deactivate</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./documentation"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+                <footer class="bd-footer-article">
+                  <!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="How%20to%20Edit%20This%20Lab%20Book.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">How to Edit This Lab Book</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../protocols/Spikesorting%20Instructions.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Spikesorting Instructions</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#prerequisites">Prerequisites</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#matlab-installation">Matlab Installation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#git-installation">Git Installation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cellexplorer-installation">CellExplorer Installation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#npy-matlab-installation">npy-matlab Installation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#kilosort-installation">Kilosort Installation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#kilosortwrapper-installation">KilosortWrapper Installation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#phy-installation">Phy Installation</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            <div class="bd-footer-content__inner">
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Martynas Dervinis
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2022.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div></div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=12da95d707ffb74b382d"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=12da95d707ffb74b382d"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

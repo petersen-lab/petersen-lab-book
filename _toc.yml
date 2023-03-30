@@ -1,0 +1,18 @@
+# Table of contents
+
+format: jb-book
+root: intro
+parts:
+- caption: Documentation
+  chapters:
+  - file: documentation/How to Edit This Lab Book
+  - file: documentation/Spikesorting Environment Setup
+- caption: Protocols
+  chapters:
+  - file: protocols/Spikesorting Instructions
+- caption: Tutorials
+  chapters:
+  - file: tutorials/Future Tutorial
+- caption: Resources
+  chapters:
+  - file: resources/Spikesorting
