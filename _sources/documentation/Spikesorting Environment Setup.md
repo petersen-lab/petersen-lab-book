@@ -37,6 +37,16 @@ To install the KilosortWrapper, follow the instructions outlined in its Github r
 mex -O CCGHeart.c
 ```
 
+Once installed, you need to edit ```NchanNear``` parameter inside the Kilosort source code in order to increase the number of recording channels available in the WaveformView window of the Phy GUI. To do so, open files ```\clustering\final_clustering.m```, ```\clustering\template_learning_part2.m```, and ```\mainLoop\trackAndSort.m```. In all these files replace the line
+```
+NchanNear   = min(ops.Nchan, 16);
+```
+with the line
+```
+NchanNear   = min(ops.Nchan, 32);
+```
+Save and close the files.
+
 (doc-spikesorting-env-install-phy)=
 ### Phy Installation
 At this stage you will have to use the terminal of your operating system. Below is the description of some notation that can be used here and that you may not be familiar with:
@@ -80,6 +90,30 @@ git clone https://github.com/cortex-lab/phylib
 cd phylib
 pip install -e . --upgrade
 ```
+Now, navigate to the folder ```<path-to-where-you-downloaded-phy>\phylib\phylib\io``` and open the file ```model.py```. Replace the line 305 where it says
+```
+n_closest_channels = 12
+```
+with the line
+```
+n_closest_channels = 32
+```
+Save and close the file.
+
+After editing the file as described, copy the file ```<path-to-where-you-downloaded-phy>\phy\plugins\n_spikes_views.py``` to the folder ```C:\Users\<your-user>\.phy\plugins```. Open the newly copied file and edit a few lines. Replace line 9 with
+```
+controller.n_spikes_waveforms = 500
+```
+and replace line 17 with this line:
+```
+controller.model.n_closest_channels = 32
+```
+
+Finaly, open the file ```C:\Users\<your-user>\.phy\phy_config.py``` and replace the last line in the file with the following line:
+```
+c.TemplateGUI.plugins = ['n_spikes_views']  # list of plugin names to load in the TemplateGUI
+```
+
 Now that Phy has been installed, navigate to the folder with the Kilosort output and, while phy environment is still open (activated with command ```.<path-to-where-you-will-install-phy-environment>\phy\Scripts\activate.ps1```), in your terminal type:
 ```
 phy template-gui params.py
