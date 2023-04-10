@@ -415,10 +415,9 @@ Save your spikesorting progress periodically often. Phy may crash unexpectedly a
 <li><p>ClusterView</p></li>
 <li><p>SimilarityView</p></li>
 <li><p>AmplitudeView</p></li>
-<li><p>CorrelogramView</p></li>
-<li><p>WaveformView</p></li>
+<li><p>CorrelogramView: Adjust window size to be 500 ms (250 ms when doing cluster comparisons).</p></li>
+<li><p>WaveformView: Make sure that at least 32 recording channels are displayed.</p></li>
 <li><p>FeatureView</p></li>
-<li><p>AmplitudeView</p></li>
 </ul>
 <p>One way you could organise them is shown in the figure below.</p>
 <a class="reference internal image-reference" href="../_images/full-phy-display.png" id="fig-protocols-spikesorting-phy-display"><img alt="../_images/full-phy-display.png" class="align-center" id="fig-protocols-spikesorting-phy-display" src="../_images/full-phy-display.png" style="width: 690px;" /></a>
@@ -427,12 +426,43 @@ Save your spikesorting progress periodically often. Phy may crash unexpectedly a
 <section id="mark-noise-clusters">
 <span id="protocols-spikesorting-noise"></span><h3>Mark Noise Clusters<a class="headerlink" href="#mark-noise-clusters" title="Permalink to this heading">#</a></h3>
 <p>You mark a cluster as noise by selecting it in the ClusterView and pressing <code class="docutils literal notranslate"><span class="pre">Alt+n</span></code> keyboard shortcut. Do not yet do anything about MUAs. You don’t want to make judgement regarding this activity type because marking clusters as MUAs would exclude them from being considered for merging later.</p>
-<p>Here are a few criteria for recognising putative noise clusers:</p>
+<p>As you go through the clusters one by one marking any noise clusters you encounter, you should also mark clusters that you think are ‘good’ units (<code class="docutils literal notranslate"><span class="pre">Alt+g</span></code> keyboard shortcut). At this stage you should also mark any cluster that you are not sure of as a ‘good’ one too. The reason for doing that is explained in the <a class="reference internal" href="#protocols-spikesorting-merge"><span class="std std-ref">Merge Units subsection</span></a>. Low count clusters with uncontaminated refractory periods should also be marked as ‘good’ for now. The criteria for classifying clusters as ‘good’ units are discussed in <a class="reference internal" href="#protocols-spikesorting-merge"><span class="std std-ref">Mark Units subsection</span></a>.</p>
+<p>Let’s get back to noise cluster classification. Here are a few criteria for recognising putative noise clusers:</p>
 <ul class="simple">
 <li><p>Cluster autocorrelogram has a triangular shape and waveforms appear uniform across recording channels as in the example below.</p></li>
 </ul>
 <a class="reference internal image-reference" href="../_images/noise-example1.png" id="fig-protocols-spikesorting-noise-example1"><img alt="../_images/noise-example1.png" class="align-center" id="fig-protocols-spikesorting-noise-example1" src="../_images/noise-example1.png" style="width: 690px;" /></a>
 <p>       <strong>Figure 2. Noise Cluster Example #1</strong></p>
+<ul class="simple">
+<li><p>Waveforms appear on all recording channels.</p></li>
+</ul>
+<a class="reference internal image-reference" href="../_images/noise-example2.png" id="fig-protocols-spikesorting-noise-example2"><img alt="../_images/noise-example2.png" class="align-center" id="fig-protocols-spikesorting-noise-example2" src="../_images/noise-example2.png" style="width: 690px;" /></a>
+<p>       <strong>Figure 3. Noise Cluster Example #2</strong></p>
+<ul class="simple">
+<li><p>Waveform appearing on a single recording channel only.</p></li>
+</ul>
+<a class="reference internal image-reference" href="../_images/noise-example3.png" id="fig-protocols-spikesorting-noise-example3"><img alt="../_images/noise-example3.png" class="align-center" id="fig-protocols-spikesorting-noise-example3" src="../_images/noise-example3.png" style="width: 690px;" /></a>
+<p>       <strong>Figure 4. Noise Cluster Example #3</strong></p>
+<ul class="simple">
+<li><p>Waveform appearing on a single recording channel only and having a distinctly unusual non-spike-like shape.</p></li>
+</ul>
+<a class="reference internal image-reference" href="../_images/noise-example4.png" id="fig-protocols-spikesorting-noise-example4"><img alt="../_images/noise-example4.png" class="align-center" id="fig-protocols-spikesorting-noise-example4" src="../_images/noise-example4.png" style="width: 690px;" /></a>
+<p>       <strong>Figure 5. Noise Cluster Example #4</strong></p>
+<ul class="simple">
+<li><p>Unit spiking on channel 64 mixed with noise appearing on multiple channels. Splitting is not possible. Therefore, this cluster should be marked as noise.</p></li>
+</ul>
+<a class="reference internal image-reference" href="../_images/noise-example5.png" id="fig-protocols-spikesorting-noise-example5"><img alt="../_images/noise-example5.png" class="align-center" id="fig-protocols-spikesorting-noise-example5" src="../_images/noise-example5.png" style="width: 690px;" /></a>
+<p>       <strong>Figure 6. Noise Cluster Example #5</strong></p>
+<ul class="simple">
+<li><p>Activity apearing on all recording channels albeit with varying amplitude. Autocorrelogram shows strong periodicity.</p></li>
+</ul>
+<a class="reference internal image-reference" href="../_images/noise-example6.png" id="fig-protocols-spikesorting-noise-example6"><img alt="../_images/noise-example6.png" class="align-center" id="fig-protocols-spikesorting-noise-example6" src="../_images/noise-example6.png" style="width: 690px;" /></a>
+<p>       <strong>Figure 7. Noise Cluster Example #6</strong></p>
+<ul class="simple">
+<li><p>Activity waveform does not resemble a typical spike waveform.</p></li>
+</ul>
+<a class="reference internal image-reference" href="../_images/noise-example7.png" id="fig-protocols-spikesorting-noise-example7"><img alt="../_images/noise-example7.png" class="align-center" id="fig-protocols-spikesorting-noise-example7" src="../_images/noise-example7.png" style="width: 690px;" /></a>
+<p>       <strong>Figure 8. Noise Cluster Example #7</strong></p>
 </section>
 <section id="mark-units">
 <span id="protocols-spikesorting-units"></span><h3>Mark Units<a class="headerlink" href="#mark-units" title="Permalink to this heading">#</a></h3>
