@@ -28,7 +28,14 @@ The purpose of the npy-matlab library and its installation instructions can be f
 
 (doc-spikesorting-env-install-kilosort)=
 ### Kilosort Installation
-Kilosort3 installation is more involved and is outlined on the Kilosort's Github repository [page](https://github.com/MouseLand/Kilosort). If you are using Windows, you will also need to install Visual Studio Community 2019 and make it the Matlab's default C++ compiler.
+Kilosort3 installation is more involved and is outlined on the Kilosort's Github repository [page](https://github.com/MouseLand/Kilosort). Don't forget to add the main Kilosort folder with its subfolders to the Matlab path.
+
+If you are using Windows, you will also need to install Visual Studio Community 2019 and make it the Matlab's default C++ compiler. The quickest way to install Visual Studio Community 2019 is via the Microsoft Store. Open Microsoft Store, search for Visual Studio Community 2019, and click Install. Once you've done that, click on Modify and click the option Desktop development with C++ inside the Workloads pane, and then click Modify again. This should install the extra needed components.
+
+Open Matlab and in the console type:
+```matlab
+mex -setup cpp
+```
 
 (doc-spikesorting-env-install-kswrapper)=
 ### KilosortWrapper Installation
@@ -80,6 +87,7 @@ notepad requirements.txt
 ```
 Replace the line that says ```numpy``` to ```numpy==1.23.5```. Once the ```requirements.txt``` file is updated, continue with the rest of the installation and type:
 ```
+Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope CurrentUser
 .<path-to-where-you-will-install-phy-environment>\phy\Scripts\activate.ps1
 python -m pip install --upgrade pip
 pip install -r requirements.txt

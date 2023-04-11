@@ -415,7 +415,12 @@ document.write(`
 </section>
 <section id="kilosort-installation">
 <span id="doc-spikesorting-env-install-kilosort"></span><h3>Kilosort Installation<a class="headerlink" href="#kilosort-installation" title="Permalink to this heading">#</a></h3>
-<p>Kilosort3 installation is more involved and is outlined on the Kilosort’s Github repository <a class="reference external" href="https://github.com/MouseLand/Kilosort">page</a>. If you are using Windows, you will also need to install Visual Studio Community 2019 and make it the Matlab’s default C++ compiler.</p>
+<p>Kilosort3 installation is more involved and is outlined on the Kilosort’s Github repository <a class="reference external" href="https://github.com/MouseLand/Kilosort">page</a>. Don’t forget to add the main Kilosort folder with its subfolders to the Matlab path.</p>
+<p>If you are using Windows, you will also need to install Visual Studio Community 2019 and make it the Matlab’s default C++ compiler. The quickest way to install Visual Studio Community 2019 is via the Microsoft Store. Open Microsoft Store, search for Visual Studio Community 2019, and click Install. Once you’ve done that, click on Modify and click the option Desktop development with C++ inside the Workloads pane, and then click Modify again. This should install the extra needed components.</p>
+<p>Open Matlab and in the console type:</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="nb">mex</span><span class="w"> </span><span class="o">-</span><span class="nb">setup</span><span class="w"> </span><span class="n">cpp</span>
+</pre></div>
+</div>
 </section>
 <section id="kilosortwrapper-installation">
 <span id="doc-spikesorting-env-install-kswrapper"></span><h3>KilosortWrapper Installation<a class="headerlink" href="#kilosortwrapper-installation" title="Permalink to this heading">#</a></h3>
@@ -466,7 +471,8 @@ document.write(`
 </pre></div>
 </div>
 <p>Replace the line that says <code class="docutils literal notranslate"><span class="pre">numpy</span></code> to <code class="docutils literal notranslate"><span class="pre">numpy==1.23.5</span></code>. Once the <code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code> file is updated, continue with the rest of the installation and type:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">.&lt;</span><span class="n">path</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">where</span><span class="o">-</span><span class="n">you</span><span class="o">-</span><span class="n">will</span><span class="o">-</span><span class="n">install</span><span class="o">-</span><span class="n">phy</span><span class="o">-</span><span class="n">environment</span><span class="o">&gt;</span>\<span class="n">phy</span>\<span class="n">Scripts</span>\<span class="n">activate</span><span class="o">.</span><span class="n">ps1</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Set</span><span class="o">-</span><span class="n">ExecutionPolicy</span> <span class="o">-</span><span class="n">ExecutionPolicy</span> <span class="n">Unrestricted</span> <span class="o">-</span><span class="n">Scope</span> <span class="n">CurrentUser</span>
+<span class="o">.&lt;</span><span class="n">path</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">where</span><span class="o">-</span><span class="n">you</span><span class="o">-</span><span class="n">will</span><span class="o">-</span><span class="n">install</span><span class="o">-</span><span class="n">phy</span><span class="o">-</span><span class="n">environment</span><span class="o">&gt;</span>\<span class="n">phy</span>\<span class="n">Scripts</span>\<span class="n">activate</span><span class="o">.</span><span class="n">ps1</span>
 <span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">--</span><span class="n">upgrade</span> <span class="n">pip</span>
 <span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
 <span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="n">requirements</span><span class="o">-</span><span class="n">dev</span><span class="o">.</span><span class="n">txt</span>
