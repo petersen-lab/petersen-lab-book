@@ -24,7 +24,7 @@ Configure your Phy display to include the below windows:
 - SimilarityView
 - AmplitudeView
 - CorrelogramView: Adjust window size to be 500 ms (250 ms when doing cluster comparisons).
-- WaveformView: Make sure that at least 32 recording channels are displayed.
+- WaveformView: Make sure that at least 32 recording channels are displayed. Single waveform duration on a single channel is 83 data points or approximately 2.77 ms.
 - FeatureView
 
 One way you could organise them is shown in the figure below.
