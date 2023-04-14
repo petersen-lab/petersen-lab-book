@@ -186,3 +186,16 @@ When finished working with Phy, to close Phy environment, type:
 ```
 deactivate
 ```
+
+(doc-spikesorting-env-run-kilosort)=
+## Run Kilosort
+To be updated soon.
+
+(doc-spikesorting-env-launch-phy)=
+## Launch Phy
+Open Power Shell and type in:
+```
+cd <kilosort-output-folder>
+.<path-where-you-installed-phy-environment>\phy\Scripts\activate.ps1
+phy template-gui params.py
+```
