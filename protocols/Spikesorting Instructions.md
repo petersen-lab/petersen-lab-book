@@ -1,8 +1,46 @@
 (protocols-spikesorting)=
 # Spikesorting Instructions
 
-(protocols-spikesorting-steps)=
-## Major Spikesorting Steps
+(protocols-spikesorting-run-kilosort)=
+## Run Kilosort
+Before you can do any manual spikesorting, you need to complete the automatic spikesorting part using Kilosort. Open Matlab and navigate to the folder containing raw extracellular electrophysiology data recorded using Neuropixels or any other probe. Run ```KilosortWrapper``` from that folder. You can, for example, use a similar script to the one shown below:
+```matlab
+basepath = cd;
+[~, basename] = fileparts(basepath);
+GPU_id = 1;
+procPath = '';
+createSubdirectory = true;
+performAutoCluster = true;
+config = '';
+phyPath = 'C:\Users\<your-user-name>\Python_environments\phy';
+acqBoard = 'OpenEphys';
+probe = 'Neuropixels1_checkerboard';
+savepath = KiloSortWrapper(basepath=basepath, basename=basename, ...
+  GPU_id=GPU_id, procPath=procPath, createSubdirectory=createSubdirectory, ...
+  performAutoCluster=performAutoCluster, config=config, phyPath=phyPath, ...
+  acqBoard=acqBoard, probe=probe);
+```
+For more details on how to run ```KilosortWrapper``` type in Matlab console one of the following:
+```matlab
+help KilosortWrapper
+dic KilosortWrapper
+```
+
+If you set ```createSubdirectory = true;```, Kilosort should produce a separate output folder inside the raw data folder. This is where you need to navigate using your terminal before launching Phy as explained in the next subsection.
+
+(protocols-spikesorting-launch-phy)=
+## Launch Phy
+Open Power Shell and type in:
+```
+cd <kilosort-output-folder>
+.<path-where-you-installed-phy-environment>\phy\Scripts\activate.ps1
+phy template-gui params.py
+```
+
+A successful launch of Phy GUI indicates that your spikesorting environment is set up and ready for manual curation of the kilosort output.
+
+(protocols-spikesorting-steps-phy)=
+## Major Manual Spikesorting Steps Using Phy
 - Step 1: [Configure Phy displays](protocols-spikesorting-phy-displays)
 - Step 2:
   - [Mark noise clusters](protocols-spikesorting-noise)

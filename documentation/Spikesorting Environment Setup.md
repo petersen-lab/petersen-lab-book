@@ -189,7 +189,30 @@ deactivate
 
 (doc-spikesorting-env-run-kilosort)=
 ## Run Kilosort
-To be updated soon.
+Open Matlab and navigate to the folder containing raw extracellular electrophysiology data recorded using Neuropixels or any other probe. Run ```KilosortWrapper``` from that folder. You can, for example, use a similar script to the one shown below:
+```matlab
+basepath = cd;
+[~, basename] = fileparts(basepath);
+GPU_id = 1;
+procPath = '';
+createSubdirectory = true;
+performAutoCluster = true;
+config = '';
+phyPath = 'C:\Users\<your-user-name>\Python_environments\phy';
+acqBoard = 'OpenEphys';
+probe = 'Neuropixels1_checkerboard';
+savepath = KiloSortWrapper(basepath=basepath, basename=basename, ...
+  GPU_id=GPU_id, procPath=procPath, createSubdirectory=createSubdirectory, ...
+  performAutoCluster=performAutoCluster, config=config, phyPath=phyPath, ...
+  acqBoard=acqBoard, probe=probe);
+```
+For more details on how to run ```KilosortWrapper``` type in Matlab console one of the following:
+```matlab
+help KilosortWrapper
+dic KilosortWrapper
+```
+
+If Matlab completes the execution of ```KilosortWrapper``` without errors, it means that Kilosort is properly set up on your system.
 
 (doc-spikesorting-env-launch-phy)=
 ## Launch Phy
@@ -199,3 +222,5 @@ cd <kilosort-output-folder>
 .<path-where-you-installed-phy-environment>\phy\Scripts\activate.ps1
 phy template-gui params.py
 ```
+
+A successful launch of Phy GUI indicates that your spikesorting environment is set up and ready for manual curation of the kilosort output.
