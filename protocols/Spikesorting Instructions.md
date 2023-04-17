@@ -146,9 +146,11 @@ Let's get back to noise cluster classification. Here are a few criteria for reco
 
 (protocols-spikesorting-split)=
 ### Split Clusters
+You should ideally be splitting clusters as part of the spikesorting Step 3. At this stage you will only be focusing on clusters that were manually marked as 'good' appearing green in the CluserView window (do not confuse with KSLabel 'good'). To display only 'good' clusters type ```group=="good"``` in the filter box located at the top of the CluserView window. This action should filter out any unsorted and 'noise' clusters from the CluserView window.
 
 (protocols-spikesorting-merge)=
 ### Merge Clusters
+You should ideally be merging clusters as part of the spikesorting Step 3. At this stage you will only be focusing on clusters that were manually marked as 'good' appearing green in the CluserView window (do not confuse with KSLabel 'good'). To display only 'good' clusters type ```group=="good"``` in the filter box located at the top of the CluserView window. This action should filter out any unsorted and 'noise' clusters from the CluserView window.
 
 (protocols-spikesorting-muas)=
 ### Mark Multiunit Activity
