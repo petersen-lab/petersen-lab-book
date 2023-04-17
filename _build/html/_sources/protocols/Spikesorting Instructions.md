@@ -140,6 +140,12 @@ Let's get back to noise cluster classification. Here are a few criteria for reco
 
 (protocols-spikesorting-units)=
 ### Mark Units
+When deciding between single unit ('good' unit; ```Alt+g```) and multiunit activity (```Alt+m```), look for a few features:
+- The refractory period in the autocorrelogram should not be contaminated with spikes. This is the most important criterion. It is reasonable to expect some minor contamination, but the refractory period should be reasonably clean. It may be possible to clean up the refractory period by splitting the cluster. This is the reason why units with contaminated refractory periods should be marked as 'good' in Step 2. They should be re-examined in Step 3 and can either be cleaned up by splitting or, if could not be cleaned up, marked as unsorted (```Alt+u```).
+- The spike waveform should have a distinct shape characteristic of action potentials. It should be clean meaning that local field potential deflections should be aligned and clearly visible on the peak channel, multiple nearby waveforms should not be present on the peak channel, waveforms should not be contaminated by noise. This is the second key criterion.
+- 'Good' units should have a relatively high firing rate. At minimum it should have a firing rate of 200 spikes per hour. The firing rate criterion over-rides all other criteria. If a unit has a low firing rate, its autocorrelogram is meaningless.
+- Unit activity should appear clusterred in an eliptical manner in the principal component space shown in the FeatureView window. Violations of this requirement may indicate the presence of merged subclusters that should be split if possible.
+- Unit amplitudes should ideally remain stable throughout the recording session. This is not a strict requirement as bursting units are likely to have multiple amplitudes. Amplitude may also change over the period of the recording due to the probe drift. However, periods where amplitude strongly deviates from the median value should be inspected for noise.
 
 (protocols-spikesorting-unsure)=
 ### Mark 'Unsure' Clusters
@@ -154,3 +160,8 @@ You should ideally be merging clusters as part of the spikesorting Step 3. At th
 
 (protocols-spikesorting-muas)=
 ### Mark Multiunit Activity
+You should do this step at the very end once you went though your data twice. Essentially, everything that is not noise or a 'good' unit is a multiunit activity. This would include:
+- Clusters with contaminated or no refractory periods in the autocorrelograms. If you failed to clean up a 'dirty' unit, it should belong here.
+- Clusters with waveforms that have multiple spikes in them.
+- Units with low firing rates.
+- If you have a hard time making a decision about a particular cluster, it most likely belongs here too.
