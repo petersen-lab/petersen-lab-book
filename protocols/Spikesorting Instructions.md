@@ -45,8 +45,10 @@ A successful launch of Phy GUI indicates that your spikesorting environment is s
 - Step 2:
   - [Mark noise clusters](protocols-spikesorting-noise)
   - [Mark 'good' clusters or units](protocols-spikesorting-units)
+  - [Mark 'unsure' clusters as 'good'](protocols-spikesorting-unsure)
+- Step 3:
   - [Split clusters](protocols-spikesorting-split)
-- Step 3: [Merge units](protocols-spikesorting-merge)
+  - [Merge clusters](protocols-spikesorting-merge)
 - Step 4: [Mark multiunit activity (MUAs)](protocols-spikesorting-muas)
 
 Once you set up your Phy interface and are ready to start spikesorting, you would typically go through the spikesorting data twice in two major phases. During the first phase you would mark noise clusters, mark obvious 'good' clusters or units, and consider clusters for splitting. After splitting, some clusters could yield 'good' and noise subclusters which should also be marked. During the second phase you would go through your 'good' units comparing them to other 'good' units and unclassified clusters and consider whether they should be merged. Finally, you would mark the remaining unclassified clusters as MUAs.
@@ -139,11 +141,14 @@ Let's get back to noise cluster classification. Here are a few criteria for reco
 (protocols-spikesorting-units)=
 ### Mark Units
 
+(protocols-spikesorting-unsure)=
+### Mark 'Unsure' Clusters
+
 (protocols-spikesorting-split)=
 ### Split Clusters
 
 (protocols-spikesorting-merge)=
-### Merge Units
+### Merge Clusters
 
 (protocols-spikesorting-muas)=
 ### Mark Multiunit Activity

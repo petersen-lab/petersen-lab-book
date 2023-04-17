@@ -372,8 +372,9 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#configure-phy-display">Configure Phy Display</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mark-noise-clusters">Mark Noise Clusters</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mark-units">Mark Units</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mark-unsure-clusters">Mark ‘Unsure’ Clusters</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#split-clusters">Split Clusters</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#merge-units">Merge Units</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#merge-clusters">Merge Clusters</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mark-multiunit-activity">Mark Multiunit Activity</a></li>
 </ul>
 </li>
@@ -434,10 +435,15 @@ document.write(`
 <ul>
 <li><p><a class="reference internal" href="#protocols-spikesorting-noise"><span class="std std-ref">Mark noise clusters</span></a></p></li>
 <li><p><a class="reference internal" href="#protocols-spikesorting-units"><span class="std std-ref">Mark ‘good’ clusters or units</span></a></p></li>
-<li><p><a class="reference internal" href="#protocols-spikesorting-split"><span class="std std-ref">Split clusters</span></a></p></li>
+<li><p><a class="reference internal" href="#protocols-spikesorting-unsure"><span class="std std-ref">Mark ‘unsure’ clusters as ‘good’</span></a></p></li>
 </ul>
 </li>
-<li><p>Step 3: <a class="reference internal" href="#protocols-spikesorting-merge"><span class="std std-ref">Merge units</span></a></p></li>
+<li><p>Step 3:</p>
+<ul>
+<li><p><a class="reference internal" href="#protocols-spikesorting-split"><span class="std std-ref">Split clusters</span></a></p></li>
+<li><p><a class="reference internal" href="#protocols-spikesorting-merge"><span class="std std-ref">Merge clusters</span></a></p></li>
+</ul>
+</li>
 <li><p>Step 4: <a class="reference internal" href="#protocols-spikesorting-muas"><span class="std std-ref">Mark multiunit activity (MUAs)</span></a></p></li>
 </ul>
 <p>Once you set up your Phy interface and are ready to start spikesorting, you would typically go through the spikesorting data twice in two major phases. During the first phase you would mark noise clusters, mark obvious ‘good’ clusters or units, and consider clusters for splitting. After splitting, some clusters could yield ‘good’ and noise subclusters which should also be marked. During the second phase you would go through your ‘good’ units comparing them to other ‘good’ units and unclassified clusters and consider whether they should be merged. Finally, you would mark the remaining unclassified clusters as MUAs.</p>
@@ -505,11 +511,14 @@ Save your spikesorting progress periodically often. Phy may crash unexpectedly a
 <section id="mark-units">
 <span id="protocols-spikesorting-units"></span><h3>Mark Units<a class="headerlink" href="#mark-units" title="Permalink to this heading">#</a></h3>
 </section>
+<section id="mark-unsure-clusters">
+<span id="protocols-spikesorting-unsure"></span><h3>Mark ‘Unsure’ Clusters<a class="headerlink" href="#mark-unsure-clusters" title="Permalink to this heading">#</a></h3>
+</section>
 <section id="split-clusters">
 <span id="protocols-spikesorting-split"></span><h3>Split Clusters<a class="headerlink" href="#split-clusters" title="Permalink to this heading">#</a></h3>
 </section>
-<section id="merge-units">
-<span id="protocols-spikesorting-merge"></span><h3>Merge Units<a class="headerlink" href="#merge-units" title="Permalink to this heading">#</a></h3>
+<section id="merge-clusters">
+<span id="protocols-spikesorting-merge"></span><h3>Merge Clusters<a class="headerlink" href="#merge-clusters" title="Permalink to this heading">#</a></h3>
 </section>
 <section id="mark-multiunit-activity">
 <span id="protocols-spikesorting-muas"></span><h3>Mark Multiunit Activity<a class="headerlink" href="#mark-multiunit-activity" title="Permalink to this heading">#</a></h3>
@@ -584,8 +593,9 @@ Save your spikesorting progress periodically often. Phy may crash unexpectedly a
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#configure-phy-display">Configure Phy Display</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mark-noise-clusters">Mark Noise Clusters</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mark-units">Mark Units</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mark-unsure-clusters">Mark ‘Unsure’ Clusters</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#split-clusters">Split Clusters</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#merge-units">Merge Units</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#merge-clusters">Merge Clusters</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mark-multiunit-activity">Mark Multiunit Activity</a></li>
 </ul>
 </li>
