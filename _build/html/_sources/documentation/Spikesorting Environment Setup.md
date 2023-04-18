@@ -117,63 +117,108 @@ and replace line 17 with this line:
 controller.model.n_closest_channels = 32
 ```
 
-For the next step, create a file called ```SplitShortISI.py``` inside the folder ```C:\Users\<your-user>\.phy\plugins```. Then open it and paste in the following content:
+For the next step, create a file called ```<path-to-where-you-downloaded-phy>\phy\phy\utils\tempdir.py```. Then open it and paste in the following content:
 ```python
-"""Show how to write a custom split action."""
+# -*- coding: utf-8 -*-
 
-from phy import IPlugin, connect
-import numpy as np
-import logging
+"""Temporary directory used in unit tests."""
 
-logger = logging.getLogger('phy')
+#------------------------------------------------------------------------------
+# Imports
+#------------------------------------------------------------------------------
 
+import warnings as _warnings
+import os as _os
+from tempfile import mkdtemp
 
+#from ..ext import six
+import six
 
-class SplitShortISI(IPlugin):
-    def attach_to_controller(self, controller):
-        @connect
-        def on_gui_ready(sender, gui):
-            #@gui.edit_actions.add(shortcut='alt+i')
-            @controller.supervisor.actions.add(shortcut='alt+i')
-            def VisualizeShortISI():
-                """Split all spikes with an interspike interval of less than 1.5 ms into a separate
-                cluster. THIS IS FOR VISUALIZATION ONLY, it will show you where potential noise
-                spikes may be located. Re-merge the clusters again afterwards and cut the cluster with
-                another method!"""
-                
-                logger.info('Detecting spikes with ISI less than 1.5 ms')
+#------------------------------------------------------------------------------
+# Temporary directory
+#------------------------------------------------------------------------------
 
-                # Selected clusters across the cluster view and similarity view.
-                cluster_ids = controller.supervisor.selected
+class TemporaryDirectory(object):
+    """Create and return a temporary directory.  This has the same
+    behavior as mkdtemp but can be used as a context manager.  For
+    example:
+        with TemporaryDirectory() as tmpdir:
+            ...
+    Upon exiting the context, the directory and everything contained
+    in it are removed.
+    """
+    def __init__(self, suffix="", prefix="tmp", dir=None):
+        self._closed = False
+        self.name = None # Handle mkdtemp raising an exception
+        self.name = mkdtemp(suffix, prefix, dir)
 
-                # Get the amplitudes, using the same controller method as what the amplitude view
-                # is using.
-                # Note that we need load_all=True to load all spikes from the selected clusters,
-                # instead of just the selection of them chosen for display.
-                bunchs = controller._amplitude_getter(cluster_ids, name='template', load_all=True)
+    def __repr__(self):
+        return "<{} {!r}>".format(self.__class__.__name__, self.name)
 
-                # We get the spike ids and the corresponding spike template amplitudes.
-                # NOTE: in this example, we only consider the first selected cluster.
-                spike_ids = bunchs[0].spike_ids
-                spike_times = controller.model.spike_times[spike_ids]
-                dspike_times = np.diff(spike_times)
+    def __enter__(self):
+        return self.name
 
-                labels = np.ones(len(dspike_times),'int64')
-                labels[dspike_times<.0015]=2
-                labels = np.append(labels,1) #include last spike to match with len spike_ids
+    def cleanup(self, _warn=False):
+        if self.name and not self._closed:
+            try:
+                self._rmtree(self.name)
+            except (TypeError, AttributeError) as ex:
+                # Issue #10188: Emit a warning on stderr
+                # if the directory could not be cleaned
+                # up due to missing globals
+                if "None" not in str(ex):
+                    raise
+                print("ERROR: {!r} while cleaning up {!r}".format(ex, self,),
+                      file=_sys.stderr)
+                return
+            self._closed = True
+            if _warn:
+                self._warn("Implicitly cleaning up {!r}".format(self),
+                           ResourceWarning)
 
-                # We perform the clustering algorithm, which returns an integer for each
-                # subcluster.
-                #labels = k_means(y.reshape((-1, 1)))
-                assert spike_ids.shape == labels.shape
+    def __exit__(self, exc, value, tb):
+        self.cleanup()
 
-                # We split according to the labels.
-                controller.supervisor.actions.split(spike_ids, labels)
-                logger.info('Splitted short ISI spikes from main cluster')
+    def __del__(self):
+        # Issue a ResourceWarning if implicit cleanup needed
+        self.cleanup(_warn=True)
+
+    # XXX (ncoghlan): The following code attempts to make
+    # this class tolerant of the module nulling out process
+    # that happens during CPython interpreter shutdown
+    # Alas, it doesn't actually manage it. See issue #10188
+    _listdir = staticmethod(_os.listdir)
+    _path_join = staticmethod(_os.path.join)
+    _isdir = staticmethod(_os.path.isdir)
+    _islink = staticmethod(_os.path.islink)
+    _remove = staticmethod(_os.remove)
+    _rmdir = staticmethod(_os.rmdir)
+    _warn = _warnings.warn
+
+    def _rmtree(self, path):
+        # Essentially a stripped down version of shutil.rmtree.  We can't
+        # use globals because they may be None'ed out at shutdown.
+        for name in self._listdir(path):
+            fullname = self._path_join(path, name)
+            try:
+                isdir = self._isdir(fullname) and not self._islink(fullname)
+            except OSError:
+                isdir = False
+            if isdir:
+                self._rmtree(fullname)
+            else:
+                try:
+                    self._remove(fullname)
+                except OSError:
+                    pass
+        try:
+            self._rmdir(path)
+        except OSError:
+            pass
 ```
 Save and close the file.
 
-Also, create a file called ```CustomActionPlugin.py``` inside the folder ```C:\Users\<your-user>\.phy\plugins```. Then open it and paste in the following content:
+Then, create a file called ```CustomActionPlugin.py``` inside the folder ```C:\Users\<your-user>\.phy\plugins```. Then open it and paste in the following content:
 ```python
 # import from plugins/action_status_bar.py
 """Show how to create new actions in the GUI.
@@ -237,6 +282,62 @@ class CustomActionPlugin(IPlugin):
                 s = controller.supervisor.clustering.spikes_in_clusters(sim)
                 outliers2 = np.ones(len(s),dtype=int)
                 controller.supervisor.actions.split(s,outliers2)
+```
+Save and close the file.
+
+Also, create a file called ```SplitShortISI.py``` inside the folder ```C:\Users\<your-user>\.phy\plugins```. Then open it and paste in the following content:
+```python
+"""Show how to write a custom split action."""
+
+from phy import IPlugin, connect
+import numpy as np
+import logging
+
+logger = logging.getLogger('phy')
+
+
+
+class SplitShortISI(IPlugin):
+    def attach_to_controller(self, controller):
+        @connect
+        def on_gui_ready(sender, gui):
+            #@gui.edit_actions.add(shortcut='alt+i')
+            @controller.supervisor.actions.add(shortcut='alt+i')
+            def VisualizeShortISI():
+                """Split all spikes with an interspike interval of less than 1.5 ms into a separate
+                cluster. THIS IS FOR VISUALIZATION ONLY, it will show you where potential noise
+                spikes may be located. Re-merge the clusters again afterwards and cut the cluster with
+                another method!"""
+                
+                logger.info('Detecting spikes with ISI less than 1.5 ms')
+
+                # Selected clusters across the cluster view and similarity view.
+                cluster_ids = controller.supervisor.selected
+
+                # Get the amplitudes, using the same controller method as what the amplitude view
+                # is using.
+                # Note that we need load_all=True to load all spikes from the selected clusters,
+                # instead of just the selection of them chosen for display.
+                bunchs = controller._amplitude_getter(cluster_ids, name='template', load_all=True)
+
+                # We get the spike ids and the corresponding spike template amplitudes.
+                # NOTE: in this example, we only consider the first selected cluster.
+                spike_ids = bunchs[0].spike_ids
+                spike_times = controller.model.spike_times[spike_ids]
+                dspike_times = np.diff(spike_times)
+
+                labels = np.ones(len(dspike_times),'int64')
+                labels[dspike_times<.0015]=2
+                labels = np.append(labels,1) #include last spike to match with len spike_ids
+
+                # We perform the clustering algorithm, which returns an integer for each
+                # subcluster.
+                #labels = k_means(y.reshape((-1, 1)))
+                assert spike_ids.shape == labels.shape
+
+                # We split according to the labels.
+                controller.supervisor.actions.split(spike_ids, labels)
+                logger.info('Splitted short ISI spikes from main cluster')
 ```
 Save and close the file.
 
