@@ -728,7 +728,8 @@ document.write(`
 </pre></div>
 </div>
 <p>Now that Phy has been installed, navigate to the folder with the Kilosort output and, while phy environment is still open (activated with command <code class="docutils literal notranslate"><span class="pre">.&lt;path-to-where-you-will-install-phy-environment&gt;\phy\Scripts\activate.ps1</span></code>), in your terminal type:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">phy</span> <span class="n">template</span><span class="o">-</span><span class="n">gui</span> <span class="n">params</span><span class="o">.</span><span class="n">py</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">c</span><span class="o">.</span><span class="n">Plugins</span><span class="o">.</span><span class="n">dirs</span> <span class="o">=</span> <span class="p">[</span><span class="sa">r</span><span class="s1">&#39;C:\Users\&lt;your-username&gt;\.phy\plugins&#39;</span><span class="p">]</span>
+<span class="n">phy</span> <span class="n">template</span><span class="o">-</span><span class="n">gui</span> <span class="n">params</span><span class="o">.</span><span class="n">py</span>
 </pre></div>
 </div>
 <p>When finished working with Phy, to close Phy environment, type:</p>
