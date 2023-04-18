@@ -343,12 +343,12 @@ Save and close the file.
 
 Finaly, open the file ```C:\Users\<your-user>\.phy\phy_config.py``` and replace the last line in the file with the following line:
 ```
+c.Plugins.dirs = [r'C:\Users\<your-username>\.phy\plugins']
 c.TemplateGUI.plugins = ['n_spikes_views','SplitShortISI']  # list of plugin names to load in the TemplateGUI
 ```
 
 Now that Phy has been installed, navigate to the folder with the Kilosort output and, while phy environment is still open (activated with command ```.<path-to-where-you-will-install-phy-environment>\phy\Scripts\activate.ps1```), in your terminal type:
 ```
-c.Plugins.dirs = [r'C:\Users\<your-username>\.phy\plugins']
 phy template-gui params.py
 ```
 When finished working with Phy, to close Phy environment, type:
