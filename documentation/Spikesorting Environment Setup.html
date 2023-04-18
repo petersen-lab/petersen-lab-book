@@ -494,177 +494,29 @@ document.write(`
 </pre></div>
 </div>
 <p>Save and close the file.</p>
-<p>After editing the file as described, copy the file <code class="docutils literal notranslate"><span class="pre">&lt;path-to-where-you-downloaded-phy&gt;\phy\plugins\n_spikes_views.py</span></code> to the folder <code class="docutils literal notranslate"><span class="pre">C:\Users\&lt;your-user&gt;\.phy\plugins</span></code>. Open the newly copied file and edit a few lines. Replace line 9 with</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">controller</span><span class="o">.</span><span class="n">n_spikes_waveforms</span> <span class="o">=</span> <span class="mi">500</span>
-</pre></div>
-</div>
-<p>and replace line 17 with this line:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">controller</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">n_closest_channels</span> <span class="o">=</span> <span class="mi">32</span>
-</pre></div>
-</div>
-<p>For the next step, create a file called <code class="docutils literal notranslate"><span class="pre">&lt;path-to-where-you-downloaded-phy&gt;\phy\phy\utils\tempdir.py</span></code>. Then open it and paste in the following content:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<p>After editing the file as described, create a file called <code class="docutils literal notranslate"><span class="pre">n_spikes_views.py</span></code> inside the folder <code class="docutils literal notranslate"><span class="pre">C:\Users\&lt;your-user&gt;\.phy\plugins</span></code>. Then open it and paste in the following content:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;Show how to change the number of displayed spikes in each view.&quot;&quot;&quot;</span>
 
-<span class="sd">&quot;&quot;&quot;Temporary directory used in unit tests.&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">phy</span> <span class="kn">import</span> <span class="n">IPlugin</span>
 
-<span class="c1">#------------------------------------------------------------------------------</span>
-<span class="c1"># Imports</span>
-<span class="c1">#------------------------------------------------------------------------------</span>
 
-<span class="kn">import</span> <span class="nn">warnings</span> <span class="k">as</span> <span class="nn">_warnings</span>
-<span class="kn">import</span> <span class="nn">os</span> <span class="k">as</span> <span class="nn">_os</span>
-<span class="kn">from</span> <span class="nn">tempfile</span> <span class="kn">import</span> <span class="n">mkdtemp</span>
-
-<span class="c1">#from ..ext import six</span>
-<span class="kn">import</span> <span class="nn">six</span>
-
-<span class="c1">#------------------------------------------------------------------------------</span>
-<span class="c1"># Temporary directory</span>
-<span class="c1">#------------------------------------------------------------------------------</span>
-
-<span class="k">class</span> <span class="nc">TemporaryDirectory</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create and return a temporary directory.  This has the same</span>
-<span class="sd">    behavior as mkdtemp but can be used as a context manager.  For</span>
-<span class="sd">    example:</span>
-<span class="sd">        with TemporaryDirectory() as tmpdir:</span>
-<span class="sd">            ...</span>
-<span class="sd">    Upon exiting the context, the directory and everything contained</span>
-<span class="sd">    in it are removed.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;tmp&quot;</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_closed</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="kc">None</span> <span class="c1"># Handle mkdtemp raising an exception</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">mkdtemp</span><span class="p">(</span><span class="n">suffix</span><span class="p">,</span> <span class="n">prefix</span><span class="p">,</span> <span class="nb">dir</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s2">&quot;&lt;</span><span class="si">{}</span><span class="s2"> </span><span class="si">{!r}</span><span class="s2">&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
-
-    <span class="k">def</span> <span class="nf">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_warn</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_closed</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_rmtree</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-            <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">AttributeError</span><span class="p">)</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
-                <span class="c1"># Issue #10188: Emit a warning on stderr</span>
-                <span class="c1"># if the directory could not be cleaned</span>
-                <span class="c1"># up due to missing globals</span>
-                <span class="k">if</span> <span class="s2">&quot;None&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">ex</span><span class="p">):</span>
-                    <span class="k">raise</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ERROR: </span><span class="si">{!r}</span><span class="s2"> while cleaning up </span><span class="si">{!r}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ex</span><span class="p">,</span> <span class="bp">self</span><span class="p">,),</span>
-                      <span class="n">file</span><span class="o">=</span><span class="n">_sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
-                <span class="k">return</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_closed</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="k">if</span> <span class="n">_warn</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_warn</span><span class="p">(</span><span class="s2">&quot;Implicitly cleaning up </span><span class="si">{!r}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
-                           <span class="ne">ResourceWarning</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">tb</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1"># Issue a ResourceWarning if implicit cleanup needed</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cleanup</span><span class="p">(</span><span class="n">_warn</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-    <span class="c1"># XXX (ncoghlan): The following code attempts to make</span>
-    <span class="c1"># this class tolerant of the module nulling out process</span>
-    <span class="c1"># that happens during CPython interpreter shutdown</span>
-    <span class="c1"># Alas, it doesn&#39;t actually manage it. See issue #10188</span>
-    <span class="n">_listdir</span> <span class="o">=</span> <span class="nb">staticmethod</span><span class="p">(</span><span class="n">_os</span><span class="o">.</span><span class="n">listdir</span><span class="p">)</span>
-    <span class="n">_path_join</span> <span class="o">=</span> <span class="nb">staticmethod</span><span class="p">(</span><span class="n">_os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">)</span>
-    <span class="n">_isdir</span> <span class="o">=</span> <span class="nb">staticmethod</span><span class="p">(</span><span class="n">_os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">)</span>
-    <span class="n">_islink</span> <span class="o">=</span> <span class="nb">staticmethod</span><span class="p">(</span><span class="n">_os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">islink</span><span class="p">)</span>
-    <span class="n">_remove</span> <span class="o">=</span> <span class="nb">staticmethod</span><span class="p">(</span><span class="n">_os</span><span class="o">.</span><span class="n">remove</span><span class="p">)</span>
-    <span class="n">_rmdir</span> <span class="o">=</span> <span class="nb">staticmethod</span><span class="p">(</span><span class="n">_os</span><span class="o">.</span><span class="n">rmdir</span><span class="p">)</span>
-    <span class="n">_warn</span> <span class="o">=</span> <span class="n">_warnings</span><span class="o">.</span><span class="n">warn</span>
-
-    <span class="k">def</span> <span class="nf">_rmtree</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
-        <span class="c1"># Essentially a stripped down version of shutil.rmtree.  We can&#39;t</span>
-        <span class="c1"># use globals because they may be None&#39;ed out at shutdown.</span>
-        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_listdir</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
-            <span class="n">fullname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_path_join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">isdir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isdir</span><span class="p">(</span><span class="n">fullname</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_islink</span><span class="p">(</span><span class="n">fullname</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
-                <span class="n">isdir</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="k">if</span> <span class="n">isdir</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_rmtree</span><span class="p">(</span><span class="n">fullname</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_remove</span><span class="p">(</span><span class="n">fullname</span><span class="p">)</span>
-                <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
-                    <span class="k">pass</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_rmdir</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
-            <span class="k">pass</span>
-</pre></div>
-</div>
-<p>Save and close the file.</p>
-<p>Then, create a file called <code class="docutils literal notranslate"><span class="pre">CustomActionPlugin.py</span></code> inside the folder <code class="docutils literal notranslate"><span class="pre">C:\Users\&lt;your-user&gt;\.phy\plugins</span></code>. Then open it and paste in the following content:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># import from plugins/action_status_bar.py</span>
-<span class="sd">&quot;&quot;&quot;Show how to create new actions in the GUI.</span>
-
-<span class="sd">The first action just displays a message in the status bar.</span>
-
-<span class="sd">The second action selects the first N clusters, where N is a parameter that is entered by</span>
-<span class="sd">the user in a prompt dialog.</span>
-
-<span class="sd">&quot;&quot;&quot;</span>
-
-<span class="kn">from</span> <span class="nn">phy</span> <span class="kn">import</span> <span class="n">IPlugin</span><span class="p">,</span> <span class="n">connect</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">logging</span>
-
-<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;phy&#39;</span><span class="p">)</span>
-
-<span class="k">class</span> <span class="nc">CustomActionPlugin</span><span class="p">(</span><span class="n">IPlugin</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">n_spikes_views</span><span class="p">(</span><span class="n">IPlugin</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">attach_to_controller</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">controller</span><span class="p">):</span>
-        <span class="nd">@connect</span>
-        <span class="k">def</span> <span class="nf">on_gui_ready</span><span class="p">(</span><span class="n">sender</span><span class="p">,</span> <span class="n">gui</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Feel free to keep below just the values you need to change.&quot;&quot;&quot;</span>
+        <span class="n">controller</span><span class="o">.</span><span class="n">n_spikes_waveforms</span> <span class="o">=</span> <span class="mi">500</span>
+        <span class="n">controller</span><span class="o">.</span><span class="n">batch_size_waveforms</span> <span class="o">=</span> <span class="mi">10</span>
+        <span class="n">controller</span><span class="o">.</span><span class="n">n_spikes_features</span> <span class="o">=</span> <span class="mi">2500</span>
+        <span class="n">controller</span><span class="o">.</span><span class="n">n_spikes_features_background</span> <span class="o">=</span> <span class="mi">2500</span>
+        <span class="n">controller</span><span class="o">.</span><span class="n">n_spikes_amplitudes</span> <span class="o">=</span> <span class="mi">2500</span>
+        <span class="n">controller</span><span class="o">.</span><span class="n">n_spikes_correlograms</span> <span class="o">=</span> <span class="mi">100000</span>
 
-            <span class="nd">@controller</span><span class="o">.</span><span class="n">supervisor</span><span class="o">.</span><span class="n">actions</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">shortcut</span><span class="o">=</span><span class="s1">&#39;ctrl+c&#39;</span><span class="p">)</span>
-            <span class="k">def</span> <span class="nf">select_first_unsorted</span><span class="p">():</span>
+        <span class="c1"># Number of &quot;best&quot; channels kept for displaying the waveforms.</span>
+        <span class="n">controller</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">n_closest_channels</span> <span class="o">=</span> <span class="mi">32</span>
 
-                <span class="c1"># All cluster view methods are called with a callback function because of the</span>
-                <span class="c1"># asynchronous nature of Python-Javascript interactions in Qt5.</span>
-                <span class="nd">@controller</span><span class="o">.</span><span class="n">supervisor</span><span class="o">.</span><span class="n">cluster_view</span><span class="o">.</span><span class="n">get_ids</span>
-                <span class="k">def</span> <span class="nf">find_unsorted</span><span class="p">(</span><span class="n">cluster_ids</span><span class="p">):</span>
-<span class="w">                    </span><span class="sd">&quot;&quot;&quot;This function is called when the ordered list of cluster ids is returned</span>
-<span class="sd">                    by the Javascript view.&quot;&quot;&quot;</span>
-                    <span class="n">groups</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">supervisor</span><span class="o">.</span><span class="n">cluster_meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;group&#39;</span><span class="p">,</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">cluster_ids</span><span class="p">))))</span>
-                    <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="n">cluster_ids</span><span class="p">:</span>
-                        <span class="k">if</span> <span class="n">groups</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">==</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">groups</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;unsorted&#39;</span><span class="p">:</span>
-                            <span class="n">s</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">supervisor</span><span class="o">.</span><span class="n">clustering</span><span class="o">.</span><span class="n">spikes_in_clusters</span><span class="p">([</span><span class="n">ii</span><span class="p">])</span>
-                            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
-                                <span class="n">firstclu</span> <span class="o">=</span> <span class="n">ii</span>
-                                <span class="k">break</span>
-                    
-                    <span class="k">if</span> <span class="s1">&#39;firstclu&#39;</span> <span class="ow">in</span> <span class="nb">locals</span><span class="p">():</span>
-                        <span class="n">controller</span><span class="o">.</span><span class="n">supervisor</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">firstclu</span><span class="p">)</span>
-
-                    <span class="k">return</span>
-
-
-            <span class="nd">@controller</span><span class="o">.</span><span class="n">supervisor</span><span class="o">.</span><span class="n">actions</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">shortcut</span><span class="o">=</span><span class="s1">&#39;ctrl+v&#39;</span><span class="p">)</span>
-            <span class="k">def</span> <span class="nf">move_selected_to_end</span><span class="p">():</span>
-
-                <span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Moving selected cluster to end&quot;</span><span class="p">)</span>
-                <span class="n">selected</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">supervisor</span><span class="o">.</span><span class="n">selected</span>
-                <span class="n">s</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">supervisor</span><span class="o">.</span><span class="n">clustering</span><span class="o">.</span><span class="n">spikes_in_clusters</span><span class="p">(</span><span class="n">selected</span><span class="p">)</span>
-                <span class="n">outliers2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
-                <span class="n">controller</span><span class="o">.</span><span class="n">supervisor</span><span class="o">.</span><span class="n">actions</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">outliers2</span><span class="p">)</span>
-
-            
-            <span class="nd">@controller</span><span class="o">.</span><span class="n">supervisor</span><span class="o">.</span><span class="n">actions</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">shortcut</span><span class="o">=</span><span class="s1">&#39;ctrl+b&#39;</span><span class="p">)</span>
-            <span class="k">def</span> <span class="nf">move_similar_to_end</span><span class="p">():</span>
-
-                <span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Moving selected similar cluster to end&quot;</span><span class="p">)</span>
-                <span class="n">sim</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">supervisor</span><span class="o">.</span><span class="n">selected_similar</span>
-                <span class="n">s</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">supervisor</span><span class="o">.</span><span class="n">clustering</span><span class="o">.</span><span class="n">spikes_in_clusters</span><span class="p">(</span><span class="n">sim</span><span class="p">)</span>
-                <span class="n">outliers2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
-                <span class="n">controller</span><span class="o">.</span><span class="n">supervisor</span><span class="o">.</span><span class="n">actions</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">outliers2</span><span class="p">)</span>
+        <span class="c1"># The best channels are selected among the N closest to the best (peak) channel if their</span>
+        <span class="c1"># mean amplitude is greater than this fraction of the peak amplitude on the best channel.</span>
+        <span class="c1"># If zero, just the N closest channels are kept as the best channels.</span>
+        <span class="n">controller</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">amplitude_threshold</span> <span class="o">=</span> <span class="mi">0</span>
 </pre></div>
 </div>
 <p>Save and close the file.</p>
