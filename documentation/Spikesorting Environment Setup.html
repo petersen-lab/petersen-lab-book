@@ -502,62 +502,107 @@ document.write(`
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">controller</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">n_closest_channels</span> <span class="o">=</span> <span class="mi">32</span>
 </pre></div>
 </div>
-<p>For the next step, create a file called <code class="docutils literal notranslate"><span class="pre">SplitShortISI.py</span></code> inside the folder <code class="docutils literal notranslate"><span class="pre">C:\Users\&lt;your-user&gt;\.phy\plugins</span></code>. Then open it and paste in the following content:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;Show how to write a custom split action.&quot;&quot;&quot;</span>
+<p>For the next step, create a file called <code class="docutils literal notranslate"><span class="pre">&lt;path-to-where-you-downloaded-phy&gt;\phy\phy\utils\tempdir.py</span></code>. Then open it and paste in the following content:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 
-<span class="kn">from</span> <span class="nn">phy</span> <span class="kn">import</span> <span class="n">IPlugin</span><span class="p">,</span> <span class="n">connect</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">logging</span>
+<span class="sd">&quot;&quot;&quot;Temporary directory used in unit tests.&quot;&quot;&quot;</span>
 
-<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;phy&#39;</span><span class="p">)</span>
+<span class="c1">#------------------------------------------------------------------------------</span>
+<span class="c1"># Imports</span>
+<span class="c1">#------------------------------------------------------------------------------</span>
 
+<span class="kn">import</span> <span class="nn">warnings</span> <span class="k">as</span> <span class="nn">_warnings</span>
+<span class="kn">import</span> <span class="nn">os</span> <span class="k">as</span> <span class="nn">_os</span>
+<span class="kn">from</span> <span class="nn">tempfile</span> <span class="kn">import</span> <span class="n">mkdtemp</span>
 
+<span class="c1">#from ..ext import six</span>
+<span class="kn">import</span> <span class="nn">six</span>
 
-<span class="k">class</span> <span class="nc">SplitShortISI</span><span class="p">(</span><span class="n">IPlugin</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">attach_to_controller</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">controller</span><span class="p">):</span>
-        <span class="nd">@connect</span>
-        <span class="k">def</span> <span class="nf">on_gui_ready</span><span class="p">(</span><span class="n">sender</span><span class="p">,</span> <span class="n">gui</span><span class="p">):</span>
-            <span class="c1">#@gui.edit_actions.add(shortcut=&#39;alt+i&#39;)</span>
-            <span class="nd">@controller</span><span class="o">.</span><span class="n">supervisor</span><span class="o">.</span><span class="n">actions</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">shortcut</span><span class="o">=</span><span class="s1">&#39;alt+i&#39;</span><span class="p">)</span>
-            <span class="k">def</span> <span class="nf">VisualizeShortISI</span><span class="p">():</span>
-<span class="w">                </span><span class="sd">&quot;&quot;&quot;Split all spikes with an interspike interval of less than 1.5 ms into a separate</span>
-<span class="sd">                cluster. THIS IS FOR VISUALIZATION ONLY, it will show you where potential noise</span>
-<span class="sd">                spikes may be located. Re-merge the clusters again afterwards and cut the cluster with</span>
-<span class="sd">                another method!&quot;&quot;&quot;</span>
-                
-                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Detecting spikes with ISI less than 1.5 ms&#39;</span><span class="p">)</span>
+<span class="c1">#------------------------------------------------------------------------------</span>
+<span class="c1"># Temporary directory</span>
+<span class="c1">#------------------------------------------------------------------------------</span>
 
-                <span class="c1"># Selected clusters across the cluster view and similarity view.</span>
-                <span class="n">cluster_ids</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">supervisor</span><span class="o">.</span><span class="n">selected</span>
+<span class="k">class</span> <span class="nc">TemporaryDirectory</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create and return a temporary directory.  This has the same</span>
+<span class="sd">    behavior as mkdtemp but can be used as a context manager.  For</span>
+<span class="sd">    example:</span>
+<span class="sd">        with TemporaryDirectory() as tmpdir:</span>
+<span class="sd">            ...</span>
+<span class="sd">    Upon exiting the context, the directory and everything contained</span>
+<span class="sd">    in it are removed.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;tmp&quot;</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_closed</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="kc">None</span> <span class="c1"># Handle mkdtemp raising an exception</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">mkdtemp</span><span class="p">(</span><span class="n">suffix</span><span class="p">,</span> <span class="n">prefix</span><span class="p">,</span> <span class="nb">dir</span><span class="p">)</span>
 
-                <span class="c1"># Get the amplitudes, using the same controller method as what the amplitude view</span>
-                <span class="c1"># is using.</span>
-                <span class="c1"># Note that we need load_all=True to load all spikes from the selected clusters,</span>
-                <span class="c1"># instead of just the selection of them chosen for display.</span>
-                <span class="n">bunchs</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">_amplitude_getter</span><span class="p">(</span><span class="n">cluster_ids</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;template&#39;</span><span class="p">,</span> <span class="n">load_all</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;&lt;</span><span class="si">{}</span><span class="s2"> </span><span class="si">{!r}</span><span class="s2">&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 
-                <span class="c1"># We get the spike ids and the corresponding spike template amplitudes.</span>
-                <span class="c1"># NOTE: in this example, we only consider the first selected cluster.</span>
-                <span class="n">spike_ids</span> <span class="o">=</span> <span class="n">bunchs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">spike_ids</span>
-                <span class="n">spike_times</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">spike_times</span><span class="p">[</span><span class="n">spike_ids</span><span class="p">]</span>
-                <span class="n">dspike_times</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">spike_times</span><span class="p">)</span>
+    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
 
-                <span class="n">labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dspike_times</span><span class="p">),</span><span class="s1">&#39;int64&#39;</span><span class="p">)</span>
-                <span class="n">labels</span><span class="p">[</span><span class="n">dspike_times</span><span class="o">&lt;</span><span class="mf">.0015</span><span class="p">]</span><span class="o">=</span><span class="mi">2</span>
-                <span class="n">labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span> <span class="c1">#include last spike to match with len spike_ids</span>
+    <span class="k">def</span> <span class="nf">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_warn</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_closed</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_rmtree</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">AttributeError</span><span class="p">)</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+                <span class="c1"># Issue #10188: Emit a warning on stderr</span>
+                <span class="c1"># if the directory could not be cleaned</span>
+                <span class="c1"># up due to missing globals</span>
+                <span class="k">if</span> <span class="s2">&quot;None&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">ex</span><span class="p">):</span>
+                    <span class="k">raise</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ERROR: </span><span class="si">{!r}</span><span class="s2"> while cleaning up </span><span class="si">{!r}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ex</span><span class="p">,</span> <span class="bp">self</span><span class="p">,),</span>
+                      <span class="n">file</span><span class="o">=</span><span class="n">_sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
+                <span class="k">return</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_closed</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">if</span> <span class="n">_warn</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_warn</span><span class="p">(</span><span class="s2">&quot;Implicitly cleaning up </span><span class="si">{!r}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
+                           <span class="ne">ResourceWarning</span><span class="p">)</span>
 
-                <span class="c1"># We perform the clustering algorithm, which returns an integer for each</span>
-                <span class="c1"># subcluster.</span>
-                <span class="c1">#labels = k_means(y.reshape((-1, 1)))</span>
-                <span class="k">assert</span> <span class="n">spike_ids</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">labels</span><span class="o">.</span><span class="n">shape</span>
+    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">tb</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
 
-                <span class="c1"># We split according to the labels.</span>
-                <span class="n">controller</span><span class="o">.</span><span class="n">supervisor</span><span class="o">.</span><span class="n">actions</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">spike_ids</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Splitted short ISI spikes from main cluster&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Issue a ResourceWarning if implicit cleanup needed</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cleanup</span><span class="p">(</span><span class="n">_warn</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># XXX (ncoghlan): The following code attempts to make</span>
+    <span class="c1"># this class tolerant of the module nulling out process</span>
+    <span class="c1"># that happens during CPython interpreter shutdown</span>
+    <span class="c1"># Alas, it doesn&#39;t actually manage it. See issue #10188</span>
+    <span class="n">_listdir</span> <span class="o">=</span> <span class="nb">staticmethod</span><span class="p">(</span><span class="n">_os</span><span class="o">.</span><span class="n">listdir</span><span class="p">)</span>
+    <span class="n">_path_join</span> <span class="o">=</span> <span class="nb">staticmethod</span><span class="p">(</span><span class="n">_os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">)</span>
+    <span class="n">_isdir</span> <span class="o">=</span> <span class="nb">staticmethod</span><span class="p">(</span><span class="n">_os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">)</span>
+    <span class="n">_islink</span> <span class="o">=</span> <span class="nb">staticmethod</span><span class="p">(</span><span class="n">_os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">islink</span><span class="p">)</span>
+    <span class="n">_remove</span> <span class="o">=</span> <span class="nb">staticmethod</span><span class="p">(</span><span class="n">_os</span><span class="o">.</span><span class="n">remove</span><span class="p">)</span>
+    <span class="n">_rmdir</span> <span class="o">=</span> <span class="nb">staticmethod</span><span class="p">(</span><span class="n">_os</span><span class="o">.</span><span class="n">rmdir</span><span class="p">)</span>
+    <span class="n">_warn</span> <span class="o">=</span> <span class="n">_warnings</span><span class="o">.</span><span class="n">warn</span>
+
+    <span class="k">def</span> <span class="nf">_rmtree</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+        <span class="c1"># Essentially a stripped down version of shutil.rmtree.  We can&#39;t</span>
+        <span class="c1"># use globals because they may be None&#39;ed out at shutdown.</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_listdir</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+            <span class="n">fullname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_path_join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">isdir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isdir</span><span class="p">(</span><span class="n">fullname</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_islink</span><span class="p">(</span><span class="n">fullname</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+                <span class="n">isdir</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">if</span> <span class="n">isdir</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_rmtree</span><span class="p">(</span><span class="n">fullname</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_remove</span><span class="p">(</span><span class="n">fullname</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+                    <span class="k">pass</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_rmdir</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+            <span class="k">pass</span>
 </pre></div>
 </div>
 <p>Save and close the file.</p>
-<p>Also, create a file called <code class="docutils literal notranslate"><span class="pre">CustomActionPlugin.py</span></code> inside the folder <code class="docutils literal notranslate"><span class="pre">C:\Users\&lt;your-user&gt;\.phy\plugins</span></code>. Then open it and paste in the following content:</p>
+<p>Then, create a file called <code class="docutils literal notranslate"><span class="pre">CustomActionPlugin.py</span></code> inside the folder <code class="docutils literal notranslate"><span class="pre">C:\Users\&lt;your-user&gt;\.phy\plugins</span></code>. Then open it and paste in the following content:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># import from plugins/action_status_bar.py</span>
 <span class="sd">&quot;&quot;&quot;Show how to create new actions in the GUI.</span>
 
@@ -620,6 +665,61 @@ document.write(`
                 <span class="n">s</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">supervisor</span><span class="o">.</span><span class="n">clustering</span><span class="o">.</span><span class="n">spikes_in_clusters</span><span class="p">(</span><span class="n">sim</span><span class="p">)</span>
                 <span class="n">outliers2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
                 <span class="n">controller</span><span class="o">.</span><span class="n">supervisor</span><span class="o">.</span><span class="n">actions</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">outliers2</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Save and close the file.</p>
+<p>Also, create a file called <code class="docutils literal notranslate"><span class="pre">SplitShortISI.py</span></code> inside the folder <code class="docutils literal notranslate"><span class="pre">C:\Users\&lt;your-user&gt;\.phy\plugins</span></code>. Then open it and paste in the following content:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;Show how to write a custom split action.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">phy</span> <span class="kn">import</span> <span class="n">IPlugin</span><span class="p">,</span> <span class="n">connect</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;phy&#39;</span><span class="p">)</span>
+
+
+
+<span class="k">class</span> <span class="nc">SplitShortISI</span><span class="p">(</span><span class="n">IPlugin</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">attach_to_controller</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">controller</span><span class="p">):</span>
+        <span class="nd">@connect</span>
+        <span class="k">def</span> <span class="nf">on_gui_ready</span><span class="p">(</span><span class="n">sender</span><span class="p">,</span> <span class="n">gui</span><span class="p">):</span>
+            <span class="c1">#@gui.edit_actions.add(shortcut=&#39;alt+i&#39;)</span>
+            <span class="nd">@controller</span><span class="o">.</span><span class="n">supervisor</span><span class="o">.</span><span class="n">actions</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">shortcut</span><span class="o">=</span><span class="s1">&#39;alt+i&#39;</span><span class="p">)</span>
+            <span class="k">def</span> <span class="nf">VisualizeShortISI</span><span class="p">():</span>
+<span class="w">                </span><span class="sd">&quot;&quot;&quot;Split all spikes with an interspike interval of less than 1.5 ms into a separate</span>
+<span class="sd">                cluster. THIS IS FOR VISUALIZATION ONLY, it will show you where potential noise</span>
+<span class="sd">                spikes may be located. Re-merge the clusters again afterwards and cut the cluster with</span>
+<span class="sd">                another method!&quot;&quot;&quot;</span>
+                
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Detecting spikes with ISI less than 1.5 ms&#39;</span><span class="p">)</span>
+
+                <span class="c1"># Selected clusters across the cluster view and similarity view.</span>
+                <span class="n">cluster_ids</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">supervisor</span><span class="o">.</span><span class="n">selected</span>
+
+                <span class="c1"># Get the amplitudes, using the same controller method as what the amplitude view</span>
+                <span class="c1"># is using.</span>
+                <span class="c1"># Note that we need load_all=True to load all spikes from the selected clusters,</span>
+                <span class="c1"># instead of just the selection of them chosen for display.</span>
+                <span class="n">bunchs</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">_amplitude_getter</span><span class="p">(</span><span class="n">cluster_ids</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;template&#39;</span><span class="p">,</span> <span class="n">load_all</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+                <span class="c1"># We get the spike ids and the corresponding spike template amplitudes.</span>
+                <span class="c1"># NOTE: in this example, we only consider the first selected cluster.</span>
+                <span class="n">spike_ids</span> <span class="o">=</span> <span class="n">bunchs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">spike_ids</span>
+                <span class="n">spike_times</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">spike_times</span><span class="p">[</span><span class="n">spike_ids</span><span class="p">]</span>
+                <span class="n">dspike_times</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">spike_times</span><span class="p">)</span>
+
+                <span class="n">labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dspike_times</span><span class="p">),</span><span class="s1">&#39;int64&#39;</span><span class="p">)</span>
+                <span class="n">labels</span><span class="p">[</span><span class="n">dspike_times</span><span class="o">&lt;</span><span class="mf">.0015</span><span class="p">]</span><span class="o">=</span><span class="mi">2</span>
+                <span class="n">labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span> <span class="c1">#include last spike to match with len spike_ids</span>
+
+                <span class="c1"># We perform the clustering algorithm, which returns an integer for each</span>
+                <span class="c1"># subcluster.</span>
+                <span class="c1">#labels = k_means(y.reshape((-1, 1)))</span>
+                <span class="k">assert</span> <span class="n">spike_ids</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">labels</span><span class="o">.</span><span class="n">shape</span>
+
+                <span class="c1"># We split according to the labels.</span>
+                <span class="n">controller</span><span class="o">.</span><span class="n">supervisor</span><span class="o">.</span><span class="n">actions</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">spike_ids</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Splitted short ISI spikes from main cluster&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Save and close the file.</p>
