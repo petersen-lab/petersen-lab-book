@@ -23,7 +23,7 @@ savepath = KiloSortWrapper(basepath=basepath, basename=basename, ...
 For more details on how to run ```KilosortWrapper``` type in Matlab console one of the following:
 ```matlab
 help KilosortWrapper
-dic KilosortWrapper
+doc KilosortWrapper
 ```
 
 If you set ```createSubdirectory = true;```, Kilosort should produce a separate output folder inside the raw data folder. This is where you need to navigate using your terminal before launching Phy as explained in the next subsection.
@@ -37,7 +37,7 @@ cd <kilosort-output-folder>
 phy template-gui params.py
 ```
 
-A successful launch of Phy GUI indicates that your spikesorting environment is set up and ready for manual curation of the kilosort output.
+A successful launch of Phy GUI indicates that your spikesorting environment is set up and ready for manual curation of the Kilosort output.
 
 (protocols-spikesorting-steps-phy)=
 ## Major Manual Spikesorting Steps Using Phy
@@ -51,7 +51,7 @@ A successful launch of Phy GUI indicates that your spikesorting environment is s
   - [Merge clusters](protocols-spikesorting-merge)
 - Step 4: [Mark multiunit activity (MUAs)](protocols-spikesorting-muas)
 
-Once you set up your Phy interface and are ready to start spikesorting, you would typically go through the spikesorting data twice in two major phases. During the first phase you would mark noise clusters, mark obvious 'good' clusters or units, and consider clusters for splitting. After splitting, some clusters could yield 'good' and noise subclusters which should also be marked. During the second phase you would go through your 'good' units comparing them to other 'good' units and unclassified clusters and consider whether they should be merged. Finally, you would mark the remaining unclassified clusters as MUAs.
+Once you set up your Phy interface and are ready to start spikesorting, you would typically go through the spikesorting data twice in two major phases. During the first phase you would mark noise clusters, mark obvious 'good' clusters or units, and mark any clusters that you are not sure of as 'good' also. In the second sift though the data you should examine clusters marked as 'good' for splitting. You should also compare these clusters to other 'good' and 'unsorted' clusters in the SimilarityView window for potential mergers. Finally, you would mark the remaining unclassified clusters as MUAs.
 
 ```{danger} Do not lose your work!
 Save your spikesorting progress periodically often. Phy may crash unexpectedly and all unsaved work would be lost. There is no autosave functionality in Phy. The shortcut for saving is ```Ctrl+s```.
@@ -79,7 +79,7 @@ One way you could organise them is shown in the figure below.
 ### Mark Noise Clusters
 You mark a cluster as noise by selecting it in the ClusterView and pressing ```Alt+n``` keyboard shortcut. Do not yet do anything about MUAs. You don't want to make judgement regarding this activity type because marking clusters as MUAs would exclude them from being considered for merging later.
 
-As you go through the clusters one by one marking any noise clusters you encounter, you should also mark clusters that you think are 'good' units (```Alt+g``` keyboard shortcut). At this stage you should also mark any cluster that you are not sure of as a 'good' one too. The reason for doing that is explained in the [Merge Units subsection](protocols-spikesorting-merge). Low count clusters with uncontaminated refractory periods should also be marked as 'good' for now. The criteria for classifying clusters as 'good' units are discussed in [Mark Units subsection](protocols-spikesorting-merge).
+As you go through the clusters one by one marking any noise clusters you encounter, you should also mark clusters that you think are 'good' units (```Alt+g``` keyboard shortcut). At this stage you should also mark any cluster that you are not sure of as a 'good' one too. The reason for doing that is explained in the [Merge Units](protocols-spikesorting-merge) subsection. Low count clusters with uncontaminated refractory periods should also be marked as 'good' for now. The criteria for classifying clusters as 'good' units are discussed in [Mark Units](protocols-spikesorting-merge) subsection.
 
 Let's get back to noise cluster classification. Here are a few criteria for recognising putative noise clusers:
 - Cluster autocorrelogram has a triangular shape and waveforms appear uniform across recording channels as in the example below.
@@ -145,24 +145,46 @@ When deciding between single unit ('good' unit; ```Alt+g```) and multiunit activ
 - The refractory period should be demarcated by a smooth transition in the histogram bins from zero (or very low) count to high count. The appearance of a sharp cliff at the edge of the refractory period is indicative of multiunit activity. The cliff is indicative of the spike detection algorithm missing overlapping spikes that belong to the same cluster. These missing spikes create the appearance of a sharp refractory period as they suddenly go missing once two spikes appear too close to each other.
 - The spike waveform should have a distinct shape characteristic of action potentials. It should be clean meaning that local field potential deflections should be aligned and clearly visible on the peak channel, multiple nearby waveforms should not be present on the peak channel, waveforms should not be contaminated by noise. This is the third key criterion.
 - 'Good' units should have a relatively high firing rate. At minimum it should have a firing rate of 200 spikes per hour. The firing rate criterion over-rides all other criteria. If a unit has a low firing rate, its autocorrelogram is meaningless.
-- Unit activity should appear clusterred in an eliptical manner in the principal component space shown in the FeatureView window. Violations of this requirement may indicate the presence of merged subclusters that should be split if possible.
+- Unit activity should appear clusterred in an eliptical manner in the principal component space shown in the FeatureView window. Violations of this requirement may indicate the presence of merged subclusters that should be split, if possible.
 - Unit amplitudes should ideally remain stable throughout the recording session. This is not a strict requirement as bursting units are likely to have multiple amplitudes. Amplitude may also change over the period of the recording due to the probe drift. However, periods where amplitude strongly deviates from the median value should be inspected for noise.
 
 (protocols-spikesorting-unsure)=
 ### Mark 'Unsure' Clusters
+'Unsure' clusters are the ones that you want to come back to later to inspect them for splitting or merging with other clusters. They include:
+- Low spike count clusters with uncontaminated autocorrelogram refractory periods (considered for merging).
+- Clusters with distinct refractory periods with minor contamination (considered for splitting).
+- Clusters with distinct refractory periods but having a large count zero lag histogram bin (considered for splitting).
+- Any cluster you are not sure of and one to come back to at a later spikesorting stage.
 
 (protocols-spikesorting-split)=
 ### Split Clusters
 You should ideally be splitting clusters as part of the spikesorting Step 3. At this stage you will only be focusing on clusters that were manually marked as 'good' appearing green in the CluserView window (do not confuse with KSLabel 'good'). To display only 'good' clusters type ```group=="good"``` in the filter box located at the top of the CluserView window. This action should filter out any unsorted and 'noise' clusters from the CluserView window.
 
+Go through each cluster that was marked as 'good' one by one and, if you think they are contaminated by noise or contain multiple units, try splitting them. Clusters that might be 'worthwhile' spliting and could potentially be salvaged typically come from the 'unsure' group. They may have a contaminated refractory period or a large bin count at zero lag while otherwise possess a clear refractory period. These are the splitting steps you should attempt on these clusters:
+- Visualise spikes in the refractory period: go to ```Edit >> VisualizeShortISI``` in the Phy menu. This action will split spikes with the short inter-spike interval (ISI) from the rest of the cluster. If the short ISI spikes contain only noise, they should be discarded as noise. If they contain units, they cannot be split apart and should be re-merged with the rest of the cluster they came from.
+- Inspect the FeatureView window. If you see that the cluster does not have a spherical cloud shape, this may indicate that multiple clusters were merged together. Try to separate such a cluster by drawing lines around part of the cluster (```Ctrl+left-click```) and pressing ```k``` to split. If you think that the two resultant clusters do not belong together, keep them separated. Otherwise, re-merge them. On criteria for deciding when clusters should be merged or kept seprate, see the [Merge Clusters](protocols-spikesorting-merge) subsection.
+- Inspect the AmplitudeView window for unusual groupings of spikes. Try to split those apart by drawing lines around these groupings (```Ctrl+left-click```) and pressing ```k``` to split. These clusters may contain noise or other clusters of spikes that should be kept separate. If the resultant clusters are similar, they should be re-merged back. On criteria for deciding when clusters should be merged or kept seprate, see the [Merge Clusters](protocols-spikesorting-merge) subsection.
+- Try splitting off large amplitude spikes clearly deviating away from the median amplitude in the AmplitudeView window. These large amplitude events may be noise.
+
+Other times when you would perform cluster split are when you try to clean up 'good' clusters that pass as single unit activity. In this case you can draw a close line around the cloud cluster in the FeatureView window and split away any outliers. These outliers may be noise or spikes from other clusters that were merged by mistake. Discard them as noise or multiunit activity accordingly. However, you must re-merge them if these split-off spikes are similar to the spikes in the main cluster. 
+
 (protocols-spikesorting-merge)=
 ### Merge Clusters
-You should ideally be merging clusters as part of the spikesorting Step 3. At this stage you will only be focusing on clusters that were manually marked as 'good' appearing green in the CluserView window (do not confuse with KSLabel 'good'). To display only 'good' clusters type ```group=="good"``` in the filter box located at the top of the CluserView window. This action should filter out any unsorted and 'noise' clusters from the CluserView window.
+You should ideally be merging clusters as part of the spikesorting Step 3. At this stage you will only be focusing on clusters that were manually marked as 'good' appearing green in the CluserView window (do not confuse with KSLabel 'good'). To display only 'good' clusters type ```group=="good"``` in the filter box located at the top of the ClusterView window. This action should filter out any unsorted and 'noise' clusters from the CluserView window.
+
+Go through each cluster that was marked as 'good' one by one. Press ```spacebar``` to select the next most similar cluster in the ```SimilarityView```. Only 'good' or 'unsorted' clusters can be selected. This is the reason why you should not mark clusters as multiunit activity until the very end of the spikesorting process. Below are the criteria to consider when merging clusters:
+- The spike waveforms of the clusters being compared should be very similar and appear on the same recording channels.
+- The cross-correlograms should have clean refractory periods. However, if the spike waveforms are identical but the cross-correlogram refractory periods are still contaminated these clusters might be merged. Then they should be attempted to be split based on the criteria outlined in [Split Clusters](protocols-spikesorting-split) subsection or should be kept merged and the resultant cluster re-classified as 'unsorted'.
+- The two clusters should overlap or appear adjacent to each other in the principal component space of the FeatureView window. The merged cluster should then form a single cloud cluster in the principal component space.
+- Amplitudes of the two clusters should overlap or form continuous grouping over time in the AmplitudeView window. This is not a strict requirement as amplitudes of the two clusters may differ due to a drift or burst firing.
+
+You merge clusters by pressing ```g```. If the newly merged cluster can no longer be merged with other clusters and still has a low spike count, it should be marked as 'unsorted'.
 
 (protocols-spikesorting-muas)=
 ### Mark Multiunit Activity
 You should do this step at the very end once you went though your data twice. Essentially, everything that is not noise or a 'good' unit is a multiunit activity. This would include:
 - Clusters with contaminated or no refractory periods in the autocorrelograms. If you failed to clean up a 'dirty' unit, it should belong here.
+- Clusters with refractory periods with non-smooth transitions between zero (or low count) and high count histogram bins.
 - Clusters with waveforms that have multiple spikes in them.
 - Units with low firing rates.
 - If you have a hard time making a decision about a particular cluster, it most likely belongs here too.
