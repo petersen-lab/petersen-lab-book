@@ -108,180 +108,30 @@ n_closest_channels = 32
 ```
 Save and close the file.
 
-After editing the file as described, copy the file ```<path-to-where-you-downloaded-phy>\phy\plugins\n_spikes_views.py``` to the folder ```C:\Users\<your-user>\.phy\plugins```. Open the newly copied file and edit a few lines. Replace line 9 with
-```
-controller.n_spikes_waveforms = 500
-```
-and replace line 17 with this line:
-```
-controller.model.n_closest_channels = 32
-```
-
-For the next step, create a file called ```<path-to-where-you-downloaded-phy>\phy\phy\utils\tempdir.py```. Then open it and paste in the following content:
+After editing the file as described, create a file called ```n_spikes_views.py``` inside the folder ```C:\Users\<your-user>\.phy\plugins```. Then open it and paste in the following content:
 ```python
-# -*- coding: utf-8 -*-
+"""Show how to change the number of displayed spikes in each view."""
 
-"""Temporary directory used in unit tests."""
+from phy import IPlugin
 
-#------------------------------------------------------------------------------
-# Imports
-#------------------------------------------------------------------------------
 
-import warnings as _warnings
-import os as _os
-from tempfile import mkdtemp
-
-#from ..ext import six
-import six
-
-#------------------------------------------------------------------------------
-# Temporary directory
-#------------------------------------------------------------------------------
-
-class TemporaryDirectory(object):
-    """Create and return a temporary directory.  This has the same
-    behavior as mkdtemp but can be used as a context manager.  For
-    example:
-        with TemporaryDirectory() as tmpdir:
-            ...
-    Upon exiting the context, the directory and everything contained
-    in it are removed.
-    """
-    def __init__(self, suffix="", prefix="tmp", dir=None):
-        self._closed = False
-        self.name = None # Handle mkdtemp raising an exception
-        self.name = mkdtemp(suffix, prefix, dir)
-
-    def __repr__(self):
-        return "<{} {!r}>".format(self.__class__.__name__, self.name)
-
-    def __enter__(self):
-        return self.name
-
-    def cleanup(self, _warn=False):
-        if self.name and not self._closed:
-            try:
-                self._rmtree(self.name)
-            except (TypeError, AttributeError) as ex:
-                # Issue #10188: Emit a warning on stderr
-                # if the directory could not be cleaned
-                # up due to missing globals
-                if "None" not in str(ex):
-                    raise
-                print("ERROR: {!r} while cleaning up {!r}".format(ex, self,),
-                      file=_sys.stderr)
-                return
-            self._closed = True
-            if _warn:
-                self._warn("Implicitly cleaning up {!r}".format(self),
-                           ResourceWarning)
-
-    def __exit__(self, exc, value, tb):
-        self.cleanup()
-
-    def __del__(self):
-        # Issue a ResourceWarning if implicit cleanup needed
-        self.cleanup(_warn=True)
-
-    # XXX (ncoghlan): The following code attempts to make
-    # this class tolerant of the module nulling out process
-    # that happens during CPython interpreter shutdown
-    # Alas, it doesn't actually manage it. See issue #10188
-    _listdir = staticmethod(_os.listdir)
-    _path_join = staticmethod(_os.path.join)
-    _isdir = staticmethod(_os.path.isdir)
-    _islink = staticmethod(_os.path.islink)
-    _remove = staticmethod(_os.remove)
-    _rmdir = staticmethod(_os.rmdir)
-    _warn = _warnings.warn
-
-    def _rmtree(self, path):
-        # Essentially a stripped down version of shutil.rmtree.  We can't
-        # use globals because they may be None'ed out at shutdown.
-        for name in self._listdir(path):
-            fullname = self._path_join(path, name)
-            try:
-                isdir = self._isdir(fullname) and not self._islink(fullname)
-            except OSError:
-                isdir = False
-            if isdir:
-                self._rmtree(fullname)
-            else:
-                try:
-                    self._remove(fullname)
-                except OSError:
-                    pass
-        try:
-            self._rmdir(path)
-        except OSError:
-            pass
-```
-Save and close the file.
-
-Then, create a file called ```CustomActionPlugin.py``` inside the folder ```C:\Users\<your-user>\.phy\plugins```. Then open it and paste in the following content:
-```python
-# import from plugins/action_status_bar.py
-"""Show how to create new actions in the GUI.
-
-The first action just displays a message in the status bar.
-
-The second action selects the first N clusters, where N is a parameter that is entered by
-the user in a prompt dialog.
-
-"""
-
-from phy import IPlugin, connect
-import numpy as np
-import logging
-
-logger = logging.getLogger('phy')
-
-class CustomActionPlugin(IPlugin):
+class n_spikes_views(IPlugin):
     def attach_to_controller(self, controller):
-        @connect
-        def on_gui_ready(sender, gui):
+        """Feel free to keep below just the values you need to change."""
+        controller.n_spikes_waveforms = 500
+        controller.batch_size_waveforms = 10
+        controller.n_spikes_features = 2500
+        controller.n_spikes_features_background = 2500
+        controller.n_spikes_amplitudes = 2500
+        controller.n_spikes_correlograms = 100000
 
-            @controller.supervisor.actions.add(shortcut='ctrl+c')
-            def select_first_unsorted():
+        # Number of "best" channels kept for displaying the waveforms.
+        controller.model.n_closest_channels = 32
 
-                # All cluster view methods are called with a callback function because of the
-                # asynchronous nature of Python-Javascript interactions in Qt5.
-                @controller.supervisor.cluster_view.get_ids
-                def find_unsorted(cluster_ids):
-                    """This function is called when the ordered list of cluster ids is returned
-                    by the Javascript view."""
-                    groups = controller.supervisor.cluster_meta.get('group',list(range(max(cluster_ids))))
-                    for ii in cluster_ids:
-                        if groups[ii] == None or groups[ii] == 'unsorted':
-                            s = controller.supervisor.clustering.spikes_in_clusters([ii])
-                            if len(s)>0:
-                                firstclu = ii
-                                break
-                    
-                    if 'firstclu' in locals():
-                        controller.supervisor.select(firstclu)
-
-                    return
-
-
-            @controller.supervisor.actions.add(shortcut='ctrl+v')
-            def move_selected_to_end():
-
-                logger.warn("Moving selected cluster to end")
-                selected = controller.supervisor.selected
-                s = controller.supervisor.clustering.spikes_in_clusters(selected)
-                outliers2 = np.ones(len(s),dtype=int)
-                controller.supervisor.actions.split(s,outliers2)
-
-            
-            @controller.supervisor.actions.add(shortcut='ctrl+b')
-            def move_similar_to_end():
-
-                logger.warn("Moving selected similar cluster to end")
-                sim = controller.supervisor.selected_similar
-                s = controller.supervisor.clustering.spikes_in_clusters(sim)
-                outliers2 = np.ones(len(s),dtype=int)
-                controller.supervisor.actions.split(s,outliers2)
+        # The best channels are selected among the N closest to the best (peak) channel if their
+        # mean amplitude is greater than this fraction of the peak amplitude on the best channel.
+        # If zero, just the N closest channels are kept as the best channels.
+        controller.model.amplitude_threshold = 0
 ```
 Save and close the file.
 
