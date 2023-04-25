@@ -108,97 +108,9 @@ n_closest_channels = 32
 ```
 Save and close the file.
 
-After editing the file as described, create a file called ```n_spikes_views.py``` inside the folder ```C:\Users\<your-user>\.phy\plugins```. Then open it and paste in the following content:
-```python
-"""Show how to change the number of displayed spikes in each view."""
+After editing the file as described, add [Phy plugins](https://github.com/dervinism/phy-plugins). The plugin files and installation instructions are provided in the [Phy plugins](https://github.com/dervinism/phy-plugins) repository README file.
 
-from phy import IPlugin
-
-
-class n_spikes_views(IPlugin):
-    def attach_to_controller(self, controller):
-        """Feel free to keep below just the values you need to change."""
-        controller.n_spikes_waveforms = 500
-        controller.batch_size_waveforms = 10
-        controller.n_spikes_features = 2500
-        controller.n_spikes_features_background = 2500
-        controller.n_spikes_amplitudes = 2500
-        controller.n_spikes_correlograms = 100000
-
-        # Number of "best" channels kept for displaying the waveforms.
-        controller.model.n_closest_channels = 32
-
-        # The best channels are selected among the N closest to the best (peak) channel if their
-        # mean amplitude is greater than this fraction of the peak amplitude on the best channel.
-        # If zero, just the N closest channels are kept as the best channels.
-        controller.model.amplitude_threshold = 0
-```
-Save and close the file.
-
-Also, create a file called ```SplitShortISI.py``` inside the folder ```C:\Users\<your-user>\.phy\plugins```. Then open it and paste in the following content:
-```python
-"""Show how to write a custom split action."""
-
-from phy import IPlugin, connect
-import numpy as np
-import logging
-
-logger = logging.getLogger('phy')
-
-
-
-class SplitShortISI(IPlugin):
-    def attach_to_controller(self, controller):
-        @connect
-        def on_gui_ready(sender, gui):
-            #@gui.edit_actions.add(shortcut='alt+i')
-            @controller.supervisor.actions.add(shortcut='alt+i')
-            def VisualizeShortISI():
-                """Split all spikes with an interspike interval of less than 1.5 ms into a separate
-                cluster. THIS IS FOR VISUALIZATION ONLY, it will show you where potential noise
-                spikes may be located. Re-merge the clusters again afterwards and cut the cluster with
-                another method!"""
-                
-                logger.info('Detecting spikes with ISI less than 1.5 ms')
-
-                # Selected clusters across the cluster view and similarity view.
-                cluster_ids = controller.supervisor.selected
-
-                # Get the amplitudes, using the same controller method as what the amplitude view
-                # is using.
-                # Note that we need load_all=True to load all spikes from the selected clusters,
-                # instead of just the selection of them chosen for display.
-                bunchs = controller._amplitude_getter(cluster_ids, name='template', load_all=True)
-
-                # We get the spike ids and the corresponding spike template amplitudes.
-                # NOTE: in this example, we only consider the first selected cluster.
-                spike_ids = bunchs[0].spike_ids
-                spike_times = controller.model.spike_times[spike_ids]
-                dspike_times = np.diff(spike_times)
-
-                labels = np.ones(len(dspike_times),'int64')
-                labels[dspike_times<.0015]=2
-                labels = np.append(labels,1) #include last spike to match with len spike_ids
-
-                # We perform the clustering algorithm, which returns an integer for each
-                # subcluster.
-                #labels = k_means(y.reshape((-1, 1)))
-                assert spike_ids.shape == labels.shape
-
-                # We split according to the labels.
-                controller.supervisor.actions.split(spike_ids, labels)
-                logger.info('Splitted short ISI spikes from main cluster')
-```
-Save and close the file.
-
-Finaly, open the file ```C:\Users\<your-user>\.phy\phy_config.py``` and replace the last line in the file with the following lines:
-```
-c.Plugins.dirs = [r'C:\Users\<your-username>\.phy\plugins']
-c.TemplateGUI.plugins = ['n_spikes_views','SplitShortISI']  # list of plugin names to load in the TemplateGUI
-```
-Replace ```<your-username>``` with the actual user name.
-
-Now that Phy has been installed, navigate to the folder with the Kilosort output and, while phy environment is still open (activated with command ```.<path-to-where-you-will-install-phy-environment>\phy\Scripts\activate.ps1```), in your terminal type:
+Now that Phy has been installed, navigate to the folder with the Kilosort output (if such folder exists; otherwise, skip to [the next section](doc-spikesorting-env-run-kilosort)) and, while phy environment is still open (activated with command ```.<path-to-where-you-will-install-phy-environment>\phy\Scripts\activate.ps1```), in your terminal type:
 ```
 phy template-gui params.py
 ```
