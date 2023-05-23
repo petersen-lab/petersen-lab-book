@@ -28,13 +28,20 @@ The purpose of the npy-matlab library and its installation instructions can be f
 
 (doc-spikesorting-env-install-kilosort)=
 ### Kilosort Installation
-Kilosort3 installation is more involved and is outlined on the Kilosort's Github repository [page](https://github.com/MouseLand/Kilosort). Don't forget to add the main Kilosort folder with its subfolders to the Matlab path.
+#### Kilosort 3
+Kilosort 3 installation is more involved and is outlined on the Kilosort's Github repository [page](https://github.com/MouseLand/Kilosort). Don't forget to add the main Kilosort folder with its subfolders to the Matlab path.
 
 If you are using Windows, you will also need to install Visual Studio Community 2019 and make it the Matlab's default C++ compiler. The quickest way to install Visual Studio Community 2019 is via the Microsoft Store. Open Microsoft Store, search for Visual Studio Community 2019, and click Install. Once you've done that, click on Modify and click the option Desktop development with C++ inside the Workloads pane, and then click Modify again. This should install the extra needed components.
 
 Open Matlab and in the console type:
 ```matlab
 mex -setup cpp
+```
+
+#### Kilosort 2.5
+Kilosort 2.5 installation is analogous to Kilosort 3 installation. Download compressed source code for Kilosort 2.5 from [here](https://github.com/MouseLand/Kilosort/releases/tag/v2.5), extract it, and place the source code folder into your Matlab libraries folder. Add the folder with its subfolder to the Matlab path. Finally, open CUDA folder in Matlab and execute the following line of code in the Matlab console:
+```
+mexGPUall
 ```
 
 (doc-spikesorting-env-install-kswrapper)=
