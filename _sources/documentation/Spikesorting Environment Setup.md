@@ -40,7 +40,7 @@ mex -setup cpp
 
 #### Kilosort 2.5
 Kilosort 2.5 installation is analogous to Kilosort 3 installation. Download compressed source code for Kilosort 2.5 from [here](https://github.com/MouseLand/Kilosort/releases/tag/v2.5), extract it, and place the source code folder into your Matlab libraries folder. Add the folder with its subfolder to the Matlab path. Finally, open CUDA folder in Matlab and execute the following line of code in the Matlab console:
-```
+```matlab
 mexGPUall
 ```
 
