@@ -371,7 +371,11 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#git-installation">Git Installation</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cellexplorer-installation">CellExplorer Installation</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#npy-matlab-installation">npy-matlab Installation</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#kilosort-installation">Kilosort Installation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#kilosort-installation">Kilosort Installation</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#kilosort-3">Kilosort 3</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#kilosort-2-5">Kilosort 2.5</a></li>
+</ul>
+</li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#kilosortwrapper-installation">KilosortWrapper Installation</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#phy-installation">Phy Installation</a></li>
 </ul>
@@ -417,12 +421,22 @@ document.write(`
 </section>
 <section id="kilosort-installation">
 <span id="doc-spikesorting-env-install-kilosort"></span><h3>Kilosort Installation<a class="headerlink" href="#kilosort-installation" title="Permalink to this heading">#</a></h3>
-<p>Kilosort3 installation is more involved and is outlined on the Kilosort’s Github repository <a class="reference external" href="https://github.com/MouseLand/Kilosort">page</a>. Don’t forget to add the main Kilosort folder with its subfolders to the Matlab path.</p>
+<section id="kilosort-3">
+<h4>Kilosort 3<a class="headerlink" href="#kilosort-3" title="Permalink to this heading">#</a></h4>
+<p>Kilosort 3 installation is more involved and is outlined on the Kilosort’s Github repository <a class="reference external" href="https://github.com/MouseLand/Kilosort">page</a>. Don’t forget to add the main Kilosort folder with its subfolders to the Matlab path.</p>
 <p>If you are using Windows, you will also need to install Visual Studio Community 2019 and make it the Matlab’s default C++ compiler. The quickest way to install Visual Studio Community 2019 is via the Microsoft Store. Open Microsoft Store, search for Visual Studio Community 2019, and click Install. Once you’ve done that, click on Modify and click the option Desktop development with C++ inside the Workloads pane, and then click Modify again. This should install the extra needed components.</p>
 <p>Open Matlab and in the console type:</p>
 <div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="nb">mex</span><span class="w"> </span><span class="o">-</span><span class="nb">setup</span><span class="w"> </span><span class="n">cpp</span>
 </pre></div>
 </div>
+</section>
+<section id="kilosort-2-5">
+<h4>Kilosort 2.5<a class="headerlink" href="#kilosort-2-5" title="Permalink to this heading">#</a></h4>
+<p>Kilosort 2.5 installation is analogous to Kilosort 3 installation. Download compressed source code for Kilosort 2.5 from <a class="reference external" href="https://github.com/MouseLand/Kilosort/releases/tag/v2.5">here</a>, extract it, and place the source code folder into your Matlab libraries folder. Add the folder with its subfolder to the Matlab path. Finally, open CUDA folder in Matlab and execute the following line of code in the Matlab console:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mexGPUall</span>
+</pre></div>
+</div>
+</section>
 </section>
 <section id="kilosortwrapper-installation">
 <span id="doc-spikesorting-env-install-kswrapper"></span><h3>KilosortWrapper Installation<a class="headerlink" href="#kilosortwrapper-installation" title="Permalink to this heading">#</a></h3>
@@ -609,7 +623,11 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#git-installation">Git Installation</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cellexplorer-installation">CellExplorer Installation</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#npy-matlab-installation">npy-matlab Installation</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#kilosort-installation">Kilosort Installation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#kilosort-installation">Kilosort Installation</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#kilosort-3">Kilosort 3</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#kilosort-2-5">Kilosort 2.5</a></li>
+</ul>
+</li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#kilosortwrapper-installation">KilosortWrapper Installation</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#phy-installation">Phy Installation</a></li>
 </ul>
