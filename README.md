@@ -1,5 +1,7 @@
 # Petersen Lab Book
-<div style="text-align:center"><img src="logo.png" width="500" float="center"></div>
+<p align="center" width="100%">
+    <img width="50%" src="logo.png">
+</p>
 
 This is the repository for the Petersen Lab Book documentation site at the University of Copenahgen. This is a [Jupyter book](https://jupyterbook.org/) that is currently under construction.
 
