@@ -429,11 +429,27 @@ document.write(`
 <div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="nb">mex</span><span class="w"> </span><span class="o">-</span><span class="nb">setup</span><span class="w"> </span><span class="n">cpp</span>
 </pre></div>
 </div>
+<p>Finally, open <code class="docutils literal notranslate"><span class="pre">./preProcess/datashift2.m</span></code> file inside the Kilosort source code folder and replace line 54:</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">spkTh</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span><span class="w"> </span><span class="c">% same as the usual &quot;template amplitude&quot;, but for the generic templates</span>
+</pre></div>
+</div>
+<p>with the following line:</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">spkTh</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">ops</span><span class="p">.</span><span class="n">spkTh</span><span class="p">;</span><span class="w"> </span><span class="c">% same as the usual &quot;template amplitude&quot;, but for the generic templates</span>
+</pre></div>
+</div>
 </section>
 <section id="kilosort-2-5">
 <h4>Kilosort 2.5<a class="headerlink" href="#kilosort-2-5" title="Permalink to this heading">#</a></h4>
 <p>Kilosort 2.5 installation is analogous to Kilosort 3 installation. Download compressed source code for Kilosort 2.5 from <a class="reference external" href="https://github.com/MouseLand/Kilosort/releases/tag/v2.5">here</a>, extract it, and place the source code folder into your Matlab libraries folder. Add the folder with its subfolder to the Matlab path. Finally, open CUDA folder in Matlab and execute the following line of code in the Matlab console:</p>
 <div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">mexGPUall</span>
+</pre></div>
+</div>
+<p>As the last step, open <code class="docutils literal notranslate"><span class="pre">./preProcess/datashift2.m</span></code> file inside the Kilosort source code folder and replace line 27:</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">spkTh</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span><span class="w"> </span><span class="c">% same as the usual &quot;template amplitude&quot;, but for the generic templates</span>
+</pre></div>
+</div>
+<p>with the following line:</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">spkTh</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">ops</span><span class="p">.</span><span class="n">spkTh</span><span class="p">;</span><span class="w"> </span><span class="c">% same as the usual &quot;template amplitude&quot;, but for the generic templates</span>
 </pre></div>
 </div>
 </section>
@@ -522,14 +538,16 @@ document.write(`
 <section id="run-kilosort">
 <span id="doc-spikesorting-env-run-kilosort"></span><h2>Run Kilosort<a class="headerlink" href="#run-kilosort" title="Permalink to this heading">#</a></h2>
 <p>Open Matlab and navigate to the folder containing raw extracellular electrophysiology data recorded using Neuropixels or any other probe. Run <code class="docutils literal notranslate"><span class="pre">KilosortWrapper</span></code> from that folder. You can, for example, use a similar script to the one shown below:</p>
-<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">basepath</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">cd</span><span class="p">;</span>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">algorithm</span><span class="p">=</span><span class="s">&#39;ks3&#39;</span><span class="p">;</span>
+<span class="n">driftCorrection</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="n">basepath</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">cd</span><span class="p">;</span>
 <span class="p">[</span><span class="o">~</span><span class="p">,</span><span class="w"> </span><span class="n">basename</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">fileparts</span><span class="p">(</span><span class="n">basepath</span><span class="p">);</span>
 <span class="n">GPU_id</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
 <span class="n">procPath</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&#39;&#39;</span><span class="p">;</span>
 <span class="n">createSubdirectory</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
 <span class="n">performAutoCluster</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
 <span class="n">config</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&#39;&#39;</span><span class="p">;</span>
-<span class="n">phyPath</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&#39;C:\Users\&lt;your-user-name&gt;\Python_environments\phy&#39;</span><span class="p">;</span>
+<span class="n">phyPath</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&#39;C:\Users\Martynas\Python_environments\phy&#39;</span><span class="p">;</span>
 <span class="n">acqBoard</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&#39;OpenEphys&#39;</span><span class="p">;</span>
 <span class="n">probe</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&#39;Neuropixels1_checkerboard&#39;</span><span class="p">;</span>
 <span class="nb">savepath</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">KiloSortWrapper</span><span class="p">(</span><span class="n">basepath</span><span class="p">=</span><span class="n">basepath</span><span class="p">,</span><span class="w"> </span><span class="n">basename</span><span class="p">=</span><span class="n">basename</span><span class="p">,</span><span class="w"> </span><span class="k">...</span>

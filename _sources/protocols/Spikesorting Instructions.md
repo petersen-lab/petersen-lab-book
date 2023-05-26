@@ -4,16 +4,16 @@
 ## Important cosiderations before doing any spikesorting
 Spikesorting involves two steps. During the first step you do the automatic spikesorting using Kilosort. During the second step you inspect the Kilosort output using Phy and make further adjustments to it. The latter part is refered to as the manual curation. Each of these steps transform the original data in many ways, often distorting it. You have to take precaution to inspect your data and seek to ensure that your data is minimally distorted/degraded by the spikesorting process.
 
-In our experience, Kilosort1 works well with multi-channel high density recording probes like Neuronexus and Neuropixels. We have also used later versions of Kilosort with good results. However, there are a few critical caveats to take into account when using later versions of Kilosort. First, later Kilosort versions appear to reduce the overall waveform amplitude of spike clusters and reduce the number of recording channels that cluster waveforms are visible on. This might be due to any/multiple data transformations applied by Kilosort during its data preprocessing stage, like common average referencing, filtering, and channel whitening. Whatever the cause of this issue, the way to sidestep this problem is to extract cluster waveforms directly from the raw recording traces manually for your subsequent data analyses. Second, later Kilosort versions drastically reduce the number of any clusters, including 'good' ones, and drastically reduce the number of spikes per cluster. This is a critical problem that appears to be caused by the drift correction. The way to avoid it is to disable the drift correction. Currently, you can only do it using Kilosort 2.5. Therefore, we recommend using Kilosort 2.5 with drift correction disabled during the automated part of spikesorting.
+In our experience, Kilosort1 works well with multi-channel high density recording probes like Neuronexus and Neuropixels. We have also used later versions of Kilosort with good results. However, there is one critical caveat to take into account when using later versions of Kilosort. Later Kilosort versions appear to reduce the overall waveform amplitude of spike clusters and reduce the number of recording channels that cluster waveforms are visible on. This might be due to any/multiple data transformations applied by Kilosort during its data preprocessing stage, like common average referencing, filtering, and channel whitening. Whatever the cause of this issue, the way to sidestep this problem is to extract cluster waveforms directly from the raw recording traces manually for your subsequent data analyses.
 
-This is obviously only our recommendation. You can try various Kilosort set-ups and then inspect the output yourself in Phy by comparing the output produced using different set-ups. If you do want to use drift correction, it is essential that you do that. Depending on the probes you are using, the quality of your recordings, and the brain area you are recording in, drift correction may drastically affect your spikesorting results.
+We recommend using the latest Kilosort version (which is 3 at the time of writing this documentation) with drift correction enabled. You can use the default settings set by the KilosortWrapper. If you do not like the Kilosort output that you are getting, you can try various Kilosort set-ups and then inspecting the output yourself in Phy by comparing the output produced using different set-ups.
 
 (protocols-spikesorting-run-kilosort)=
 ## Run Kilosort
 Before you can do any manual spikesorting, you need to complete the automatic spikesorting part using Kilosort. Open Matlab and navigate to the folder containing raw extracellular electrophysiology data recorded using Neuropixels or any other probe. Run ```KilosortWrapper``` from that folder. You can, for example, use a similar script to the one shown below:
 ```matlab
-algorithm='ks2.5';
-driftCorrection = false;
+algorithm='ks3';
+driftCorrection = true;
 basepath = cd;
 [~, basename] = fileparts(basepath);
 GPU_id = 1;
