@@ -38,10 +38,28 @@ Open Matlab and in the console type:
 mex -setup cpp
 ```
 
+Finally, open ```./preProcess/datashift2.m``` file inside the Kilosort source code folder and replace line 54:
+```matlab
+spkTh = 10; % same as the usual "template amplitude", but for the generic templates
+```
+with the following line:
+```matlab
+spkTh = ops.spkTh; % same as the usual "template amplitude", but for the generic templates
+```
+
 #### Kilosort 2.5
 Kilosort 2.5 installation is analogous to Kilosort 3 installation. Download compressed source code for Kilosort 2.5 from [here](https://github.com/MouseLand/Kilosort/releases/tag/v2.5), extract it, and place the source code folder into your Matlab libraries folder. Add the folder with its subfolder to the Matlab path. Finally, open CUDA folder in Matlab and execute the following line of code in the Matlab console:
 ```matlab
 mexGPUall
+```
+
+As the last step, open ```./preProcess/datashift2.m``` file inside the Kilosort source code folder and replace line 27:
+```matlab
+spkTh = 10; % same as the usual "template amplitude", but for the generic templates
+```
+with the following line:
+```matlab
+spkTh = ops.spkTh; % same as the usual "template amplitude", but for the generic templates
 ```
 
 (doc-spikesorting-env-install-kswrapper)=
@@ -130,6 +148,8 @@ deactivate
 ## Run Kilosort
 Open Matlab and navigate to the folder containing raw extracellular electrophysiology data recorded using Neuropixels or any other probe. Run ```KilosortWrapper``` from that folder. You can, for example, use a similar script to the one shown below:
 ```matlab
+algorithm='ks3';
+driftCorrection = true;
 basepath = cd;
 [~, basename] = fileparts(basepath);
 GPU_id = 1;
@@ -137,7 +157,7 @@ procPath = '';
 createSubdirectory = true;
 performAutoCluster = true;
 config = '';
-phyPath = 'C:\Users\<your-user-name>\Python_environments\phy';
+phyPath = 'C:\Users\Martynas\Python_environments\phy';
 acqBoard = 'OpenEphys';
 probe = 'Neuropixels1_checkerboard';
 savepath = KiloSortWrapper(basepath=basepath, basename=basename, ...
