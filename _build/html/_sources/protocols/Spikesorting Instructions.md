@@ -74,7 +74,7 @@ Save your spikesorting progress periodically often. Phy may crash unexpectedly a
 (protocols-spikesorting-phy-displays)=
 ### Configure Phy Display
 Configure your Phy display to include the below windows:
-- ClusterView
+- ClusterView: Sort clusters based on their peak recording channel in increasing order.
 - SimilarityView
 - AmplitudeView
 - CorrelogramView: Adjust window size to be 500 ms (250 ms when doing cluster comparisons). Set bin size to 0.5 milliseconds.
